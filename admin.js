@@ -159,16 +159,22 @@
     d.education = d.education || [];
     d.achievements = d.achievements || [];
     d.projects = d.projects || [];
+    d.strengths = d.strengths || [];
 
     bindText('pName', function(){ return d.profile.name; }, function(v){ d.profile.name = v; });
     bindText('pShortName', function(){ return d.profile.shortName; }, function(v){ d.profile.shortName = v; });
     bindText('pTitle', function(){ return d.profile.title; }, function(v){ d.profile.title = v; });
+    bindText('pRoles', function(){ return (d.profile.roles||[]).join(', '); }, function(v){ d.profile.roles = v.split(',').map(function(s){return s.trim();}).filter(Boolean); });
     bindText('pLocation', function(){ return d.profile.location; }, function(v){ d.profile.location = v; });
     bindText('pEmail', function(){ return d.profile.email; }, function(v){ d.profile.email = v; });
     bindText('pPhones', function(){ return (d.profile.phones||[]).join(', '); }, function(v){ d.profile.phones = v.split(',').map(function(s){return s.trim();}).filter(Boolean); });
     bindText('pPhoto', function(){ return d.profile.photo; }, function(v){ d.profile.photo = v; });
     bindText('pCv', function(){ return d.profile.cv; }, function(v){ d.profile.cv = v; });
     bindText('pSummary', function(){ return d.profile.summary; }, function(v){ d.profile.summary = v; });
+    bindText('pAboutBio', function(){ return d.profile.aboutBio; }, function(v){ d.profile.aboutBio = v; });
+    bindText('pQuote', function(){ return d.profile.quote; }, function(v){ d.profile.quote = v; });
+    bindText('pLanguages', function(){ return d.profile.languages; }, function(v){ d.profile.languages = v; });
+    bindText('pInterests', function(){ return d.profile.interests; }, function(v){ d.profile.interests = v; });
 
     renderVentures();
     renderSocials();
@@ -177,6 +183,7 @@
     renderEducation();
     renderAchievements();
     renderFolders();
+    renderStrengths();
   }
 
   // ---------- generic row-list helper ----------
@@ -210,6 +217,25 @@
   document.getElementById('btnAddAchievement').addEventListener('click', function(){
     state.data.achievements.push({ value: '0', label: 'New achievement' });
     renderAchievements();
+  });
+
+  // ---------- personal strengths (plain list of strings) ----------
+  function renderStrengths(){
+    var wrap = document.getElementById('strengthsListAdmin');
+    wrap.innerHTML = '';
+    state.data.strengths.forEach(function(s, i){
+      var card = rowCard(
+        '<div class="row-card-head"><b>Strength ' + (i+1) + '</b><button class="btn btn-sm btn-danger js-remove">Remove</button></div>' +
+        '<div class="field"><input class="js-value" value="' + attr(s) + '"></div>',
+        function(){ state.data.strengths.splice(i,1); renderStrengths(); }
+      );
+      card.querySelector('.js-value').addEventListener('input', function(e){ state.data.strengths[i] = e.target.value; });
+      wrap.appendChild(card);
+    });
+  }
+  document.getElementById('btnAddStrength').addEventListener('click', function(){
+    state.data.strengths.push('New strength');
+    renderStrengths();
   });
 
   // ---------- work / projects (folders of items) ----------

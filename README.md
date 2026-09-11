@@ -45,13 +45,13 @@ The site automatically switches between a light theme (6:00 AM – 6:00 PM Bangl
 
 Open `admin.html`, go to the **Connect / social links** panel, and click **+ Add social link**. Pick a type (WhatsApp, Facebook, Instagram, LinkedIn, Telegram, Email, Behance, or a generic Website), fill in the label and the number/URL, and Save — it appears immediately as an icon button in the Contact section and the footer.
 
-## 6. Achievements band
+## 6. Achievements (stat row)
 
-A bold highlight strip under About. Manage the value/label pairs from `admin.html`'s **Achievements** panel.
+The 4-number stat row under the "Who I Am" section (years experience, roles, ventures, HSC GPA). Manage the value/label pairs from `admin.html`'s **Achievements** panel — add or remove as many as you like.
 
 ## 7. Work / Projects gallery
 
-A "Work" section with folder tabs (categories) and a lightbox. It ships with three empty folders — Graphic Design, Motion Video Editing, Visa Documentation Samples — ready for your real pieces. To add one: upload the image to `assets/work/` in your GitHub repo (create that folder on upload), then in `admin.html`'s **Work / Projects gallery** panel add a piece with its image path, a title, and an optional link. An empty folder shows a friendly placeholder rather than looking broken.
+The "Portfolio / Work Gallery" section shows one card per category (Graphic Design, Motion Video Editing, Visa Documentation Samples). Clicking a card opens that category below with a lightbox for full-size viewing. To add a real piece: upload the image to `assets/work/` in your GitHub repo (create that folder on upload), then in `admin.html`'s **Work / Projects gallery** panel add it with its image path, a title, and an optional link. An empty category shows a friendly "coming soon" card instead of looking broken.
 
 ## 8. Email button
 
