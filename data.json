@@ -3,25 +3,13 @@
     "name": "Md Aiyub Bhuyan Abir",
     "shortName": "Abir",
     "title": "Senior Graphic Designer & Student Visa Processing Specialist",
-    "roles": ["Senior Graphic Designer", "Motion Video Editor", "Student Visa Processing Specialist", "Basic HTML Developer"],
     "location": "Bandar, Narayanganj, Bangladesh",
     "summary": "Creative and detail-oriented professional with hands-on experience in graphic design, motion video editing, social media marketing, student visa file processing, and professional documentation. Skilled in managing application-related documentation workflows with accuracy, organization, and professional presentation.",
     "photo": "assets/profile.jpg",
     "cv": "assets/Md_Aiyub_Bhuyan_Abir_CV.pdf",
     "email": "abir16032002@gmail.com",
-    "phones": ["01643573300", "01568014168"],
-    "aboutBio": "I'm Abir — a passionate graphic designer, video editor, and visa processing specialist. I love turning ideas into visual stories and helping students achieve their dream of studying abroad. I focus on quality, creativity, accuracy, and professional presentation in every project I work on.",
-    "quote": "Creativity builds brands, but honesty builds trust.",
-    "languages": "Bangla (Native), English (Fluent)",
-    "interests": "Continuous learning and exploring new skills, technologies, creative techniques, and professional tools that improve work quality and problem-solving ability."
+    "phones": ["01643573300", "01568014168"]
   },
-  "strengths": [
-    "Strong creative thinking and professional design sense",
-    "Ability to find practical and simple solutions to complex problems",
-    "Detail-oriented approach to documentation and file management",
-    "Highly adaptable with a strong interest in continuous learning",
-    "Ability to balance creative, administrative, and technical responsibilities"
-  ],
   "achievements": [
     { "value": "3+", "label": "Years of professional design & documentation experience" },
     { "value": "4", "label": "Roles held across design and visa processing" },
