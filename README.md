@@ -45,6 +45,18 @@ The site automatically switches between a light theme (6:00 AM – 6:00 PM Bangl
 
 Open `admin.html`, go to the **Connect / social links** panel, and click **+ Add social link**. Pick a type (WhatsApp, Facebook, Instagram, LinkedIn, Telegram, Email, Behance, or a generic Website), fill in the label and the number/URL, and Save — it appears immediately as an icon button in the Contact section and the footer.
 
-## 6. Performance notes
+## 6. Achievements band
+
+A bold highlight strip under About. Manage the value/label pairs from `admin.html`'s **Achievements** panel.
+
+## 7. Work / Projects gallery
+
+A "Work" section with folder tabs (categories) and a lightbox. It ships with three empty folders — Graphic Design, Motion Video Editing, Visa Documentation Samples — ready for your real pieces. To add one: upload the image to `assets/work/` in your GitHub repo (create that folder on upload), then in `admin.html`'s **Work / Projects gallery** panel add a piece with its image path, a title, and an optional link. An empty folder shows a friendly placeholder rather than looking broken.
+
+## 8. Email button
+
+Clicking "Email" or the email icon copies your address to the clipboard as a fallback (with a small on-screen confirmation) in addition to trying to open the visitor's mail app — mail-app behavior depends on their device having one configured, which a static site can't control, so the copy fallback means the address is always in their clipboard either way.
+
+## 9. Performance notes
 
 The site is built with plain HTML/CSS/JS — no heavy frameworks — so it loads fast on GitHub Pages' CDN. Animations use CSS transforms and `IntersectionObserver` (GPU-friendly, no jank). Only one image (your photo) is loaded besides fonts/icons.

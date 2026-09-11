@@ -157,6 +157,8 @@
     d.skills = d.skills || [];
     d.experience = d.experience || [];
     d.education = d.education || [];
+    d.achievements = d.achievements || [];
+    d.projects = d.projects || [];
 
     bindText('pName', function(){ return d.profile.name; }, function(v){ d.profile.name = v; });
     bindText('pShortName', function(){ return d.profile.shortName; }, function(v){ d.profile.shortName = v; });
@@ -165,6 +167,7 @@
     bindText('pEmail', function(){ return d.profile.email; }, function(v){ d.profile.email = v; });
     bindText('pPhones', function(){ return (d.profile.phones||[]).join(', '); }, function(v){ d.profile.phones = v.split(',').map(function(s){return s.trim();}).filter(Boolean); });
     bindText('pPhoto', function(){ return d.profile.photo; }, function(v){ d.profile.photo = v; });
+    bindText('pCv', function(){ return d.profile.cv; }, function(v){ d.profile.cv = v; });
     bindText('pSummary', function(){ return d.profile.summary; }, function(v){ d.profile.summary = v; });
 
     renderVentures();
@@ -172,6 +175,8 @@
     renderSkills();
     renderExperience();
     renderEducation();
+    renderAchievements();
+    renderFolders();
   }
 
   // ---------- generic row-list helper ----------
@@ -183,6 +188,80 @@
     if (rm) rm.addEventListener('click', onRemove);
     return card;
   }
+
+  // ---------- achievements ----------
+  function renderAchievements(){
+    var wrap = document.getElementById('achievementsList');
+    wrap.innerHTML = '';
+    state.data.achievements.forEach(function(a, i){
+      var card = rowCard(
+        '<div class="row-card-head"><b>Achievement ' + (i+1) + '</b><button class="btn btn-sm btn-danger js-remove">Remove</button></div>' +
+        '<div class="grid-2">' +
+          '<div class="field"><label>Value (big number/text)</label><input class="js-value" value="' + attr(a.value) + '"></div>' +
+          '<div class="field"><label>Label</label><input class="js-label" value="' + attr(a.label) + '"></div>' +
+        '</div>',
+        function(){ state.data.achievements.splice(i,1); renderAchievements(); }
+      );
+      card.querySelector('.js-value').addEventListener('input', function(e){ a.value = e.target.value; });
+      card.querySelector('.js-label').addEventListener('input', function(e){ a.label = e.target.value; });
+      wrap.appendChild(card);
+    });
+  }
+  document.getElementById('btnAddAchievement').addEventListener('click', function(){
+    state.data.achievements.push({ value: '0', label: 'New achievement' });
+    renderAchievements();
+  });
+
+  // ---------- work / projects (folders of items) ----------
+  function renderFolders(){
+    var wrap = document.getElementById('foldersList');
+    wrap.innerHTML = '';
+    state.data.projects.forEach(function(folder, fi){
+      folder.items = folder.items || [];
+      var card = rowCard(
+        '<div class="row-card-head"><b>Folder ' + (fi+1) + '</b><button class="btn btn-sm btn-danger js-remove-folder">Remove folder</button></div>' +
+        '<div class="field"><label>Folder name</label><input class="js-folder-name" value="' + attr(folder.folder) + '"></div>' +
+        '<div class="js-items"></div>' +
+        '<button type="button" class="btn btn-sm js-add-item">+ Add piece to this folder</button>',
+        function(){ state.data.projects.splice(fi,1); renderFolders(); }
+      );
+      card.querySelector('.js-remove-folder').addEventListener('click', function(){ state.data.projects.splice(fi,1); renderFolders(); });
+      card.querySelector('.js-folder-name').addEventListener('input', function(e){ folder.folder = e.target.value; });
+
+      var itemsWrap = card.querySelector('.js-items');
+      function renderItems(){
+        itemsWrap.innerHTML = '';
+        folder.items.forEach(function(item, ii){
+          var itemCard = document.createElement('div');
+          itemCard.className = 'row-card';
+          itemCard.style.background = 'var(--bg)';
+          itemCard.innerHTML =
+            '<div class="row-card-head"><b>Piece ' + (ii+1) + '</b><button class="btn btn-sm btn-danger js-remove-item">Remove</button></div>' +
+            '<div class="grid-2">' +
+              '<div class="field"><label>Title / caption</label><input class="js-title" value="' + attr(item.title) + '"></div>' +
+              '<div class="field"><label>Link (optional)</label><input class="js-link" value="' + attr(item.link) + '"></div>' +
+              '<div class="field" style="grid-column:1/-1"><label>Image path (upload to assets/work/ in GitHub first)</label><input class="js-image" value="' + attr(item.image) + '" placeholder="assets/work/example.jpg"></div>' +
+            '</div>';
+          itemCard.querySelector('.js-remove-item').addEventListener('click', function(){ folder.items.splice(ii,1); renderItems(); renderTabCountHint(); });
+          itemCard.querySelector('.js-title').addEventListener('input', function(e){ item.title = e.target.value; });
+          itemCard.querySelector('.js-link').addEventListener('input', function(e){ item.link = e.target.value; });
+          itemCard.querySelector('.js-image').addEventListener('input', function(e){ item.image = e.target.value; });
+          itemsWrap.appendChild(itemCard);
+        });
+      }
+      function renderTabCountHint(){ /* no-op placeholder for future live counts */ }
+      renderItems();
+      card.querySelector('.js-add-item').addEventListener('click', function(){
+        folder.items.push({ title: '', image: '', link: '' });
+        renderItems();
+      });
+      wrap.appendChild(card);
+    });
+  }
+  document.getElementById('btnAddFolder').addEventListener('click', function(){
+    state.data.projects.push({ folder: 'New folder', items: [] });
+    renderFolders();
+  });
 
   // ---------- ventures ----------
   function renderVentures(){

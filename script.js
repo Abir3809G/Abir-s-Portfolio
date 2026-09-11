@@ -110,11 +110,17 @@
     var wa = socials.filter(function(s){ return s.type === 'whatsapp'; })[0];
     if (wa) setHref('waLink', hrefFor(wa));
     if (p.email) setHref('emailLink', 'mailto:' + p.email);
+    if (p.cv) setHref('cvLink', p.cv); else { var cl = document.getElementById('cvLink'); if (cl) cl.style.display = 'none'; }
 
-    // Stats
-    setText('statExp', computeYears(data.experience) + '+');
-    setText('statVentures', String((data.ventures || []).length));
-    setText('statSkills', String((data.skills || []).length));
+    // Achievements
+    var achieveGrid = document.getElementById('achievementsGrid');
+    if (achieveGrid){
+      (data.achievements || []).forEach(function(a){
+        var tile = document.createElement('div');
+        tile.innerHTML = '<div class="achieve-value">' + esc(a.value) + '</div><div class="achieve-label">' + esc(a.label) + '</div>';
+        achieveGrid.appendChild(tile);
+      });
+    }
 
     // Skills
     var skillsGrid = document.getElementById('skillsGrid');
@@ -171,6 +177,9 @@
       initTilt(card);
     });
 
+    // Work / Projects gallery (folders of images, with a lightbox)
+    initWorkGallery(data.projects || []);
+
     // Connect grid (contact section) + footer mini icons
     var connectGrid = document.getElementById('connectGrid');
     var footerSocial = document.getElementById('footerSocial');
@@ -209,6 +218,90 @@
 
     // (Re)initialize scroll-reveal for newly injected nodes
     initReveal();
+    wireMailtoFallback();
+  }
+
+  // ---- Work / Projects gallery: folder tabs + grid + lightbox ----
+  function initWorkGallery(folders){
+    var tabsWrap = document.getElementById('folderTabs');
+    var grid = document.getElementById('workGrid');
+    if (!tabsWrap || !grid) return;
+    folders = folders.filter(function(f){ return f && f.folder; });
+    if (!folders.length) return;
+
+    var active = 0;
+    function renderTabs(){
+      tabsWrap.innerHTML = '';
+      folders.forEach(function(f, i){
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'folder-tab' + (i === active ? ' active' : '');
+        btn.textContent = f.folder + ' (' + (f.items || []).length + ')';
+        btn.addEventListener('click', function(){ active = i; renderTabs(); renderGrid(); });
+        tabsWrap.appendChild(btn);
+      });
+    }
+    function renderGrid(){
+      grid.innerHTML = '';
+      var items = (folders[active].items || []);
+      if (!items.length){
+        var empty = document.createElement('div');
+        empty.className = 'work-empty';
+        empty.textContent = 'No pieces in "' + folders[active].folder + '" yet — add one from the admin panel.';
+        grid.appendChild(empty);
+        return;
+      }
+      items.forEach(function(item){
+        var card = document.createElement('div');
+        card.className = 'work-card reveal in';
+        card.innerHTML = '<img src="' + esc(item.image) + '" alt="' + esc(item.title || '') + '" loading="lazy">' +
+          (item.title ? '<figcaption>' + esc(item.title) + '</figcaption>' : '');
+        card.addEventListener('click', function(){ openLightbox(item.image, item.title || ''); });
+        grid.appendChild(card);
+      });
+    }
+    renderTabs();
+    renderGrid();
+  }
+
+  function openLightbox(src, caption){
+    var lb = document.getElementById('lightbox');
+    if (!lb) return;
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightboxCaption').textContent = caption || '';
+    lb.classList.add('open');
+  }
+  (function setupLightboxClose(){
+    var lb = document.getElementById('lightbox');
+    if (!lb) return;
+    function close(){ lb.classList.remove('open'); }
+    document.getElementById('lightboxClose').addEventListener('click', close);
+    lb.addEventListener('click', function(e){ if (e.target === lb) close(); });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+  })();
+
+  // ---- mailto: fallback — copy the address too, in case no mail app is set up ----
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._hideTimer);
+    t._hideTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+  function wireMailtoFallback(){
+    document.querySelectorAll('a[href^="mailto:"]').forEach(function(a){
+      if (a._mailtoWired) return;
+      a._mailtoWired = true;
+      a.addEventListener('click', function(){
+        var addr = a.href.replace(/^mailto:/, '').split('?')[0];
+        if (navigator.clipboard && addr){
+          navigator.clipboard.writeText(addr).then(function(){
+            showToast('Email copied: ' + addr + ' (opening your mail app…)');
+          }).catch(function(){});
+        }
+      });
+    });
   }
 
   function computeYears(experience){
@@ -242,11 +335,18 @@
     tick();
   }
 
-  // ---- Nav scroll state + mobile toggle ----
+  // ---- Nav scroll state + scroll progress bar + mobile toggle ----
   var nav = document.getElementById('nav');
+  var progressBar = document.getElementById('scrollProgress');
   window.addEventListener('scroll', function(){
     if (window.scrollY > 20) nav.classList.add('scrolled');
     else nav.classList.remove('scrolled');
+    if (progressBar){
+      var h = document.documentElement;
+      var max = h.scrollHeight - h.clientHeight;
+      var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    }
   }, { passive: true });
 
   var navToggle = document.getElementById('navToggle');

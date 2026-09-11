@@ -14,6 +14,7 @@
 
 <div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 <div class="grain"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
 
 <nav class="nav" id="nav">
   <div class="container nav-inner">
@@ -21,8 +22,10 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="#achievements">Achievements</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#experience">Experience</a></li>
+      <li><a href="#work">Work</a></li>
       <li><a href="#ventures">Ventures</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -47,12 +50,18 @@
       <div class="hero-cta">
         <a href="#contact" class="btn btn-primary">Get in touch</a>
         <a href="#" id="behanceLink" target="_blank" rel="noopener" class="btn btn-ghost">View Behance ↗</a>
+        <a href="#" id="cvLink" download class="btn btn-ghost">Curriculum Vitae ⭳</a>
       </div>
     </div>
     <div class="hero-photo">
       <div class="ring"></div>
       <img id="heroPhoto" src="assets/profile.jpg" alt="Portrait">
       <div class="badge" id="heroLocation">📍 Location</div>
+      <div class="hero-badge hb-1">Ps</div>
+      <div class="hero-badge hb-2">Ai</div>
+      <div class="hero-badge hb-3">Pr</div>
+      <div class="hero-badge hb-4">Ae</div>
+      <div class="hero-badge hb-5">🎬</div>
     </div>
   </div>
   <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
@@ -69,11 +78,6 @@
     <div class="about-grid">
       <div class="reveal">
         <p id="aboutSummary" style="color:var(--text-dim)"></p>
-        <div class="stat-row">
-          <div class="stat"><b id="statExp">3+</b><span>Years Experience</span></div>
-          <div class="stat"><b id="statVentures">3</b><span>Business Ventures</span></div>
-          <div class="stat"><b id="statSkills">5+</b><span>Skill Areas</span></div>
-        </div>
       </div>
       <ul class="info-list reveal">
         <li><b>Name</b><span id="infoName"></span></li>
@@ -83,6 +87,18 @@
         <li><b>Phone</b><span id="infoPhone"></span></li>
         <li><b>Languages</b><span>Bangla (Native), English (Fluent)</span></li>
       </ul>
+    </div>
+  </div>
+</section>
+
+<section id="achievements">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Achievements</div>
+      <h2>What I've built so far</h2>
+    </div>
+    <div class="achieve-band reveal">
+      <div class="achieve-grid" id="achievementsGrid"></div>
     </div>
   </div>
 </section>
@@ -108,6 +124,26 @@
     <div class="edu-grid" id="eduGrid"></div>
   </div>
 </section>
+
+<section id="work">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Work</div>
+      <h2>Selected work</h2>
+      <p>Browse by category. New pieces get added here as I finish them.</p>
+    </div>
+    <div class="folder-tabs" id="folderTabs"></div>
+    <div class="work-grid" id="workGrid"></div>
+  </div>
+</section>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+  <figure>
+    <img id="lightboxImg" src="" alt="">
+    <figcaption id="lightboxCaption"></figcaption>
+  </figure>
+</div>
 
 <section id="ventures">
   <div class="container">
@@ -140,6 +176,8 @@
     <p>© <span id="year"></span> <span id="footerName">Md Aiyub Bhuyan Abir</span>. Built with care.</p>
   </div>
 </footer>
+
+<div class="toast" id="toast"></div>
 
 <script src="script.js" defer></script>
 </body>

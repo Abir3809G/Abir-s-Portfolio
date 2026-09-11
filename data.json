@@ -6,9 +6,16 @@
     "location": "Bandar, Narayanganj, Bangladesh",
     "summary": "Creative and detail-oriented professional with hands-on experience in graphic design, motion video editing, social media marketing, student visa file processing, and professional documentation. Skilled in managing application-related documentation workflows with accuracy, organization, and professional presentation.",
     "photo": "assets/profile.jpg",
+    "cv": "assets/Md_Aiyub_Bhuyan_Abir_CV.pdf",
     "email": "abir16032002@gmail.com",
     "phones": ["01643573300", "01568014168"]
   },
+  "achievements": [
+    { "value": "3+", "label": "Years of professional design & documentation experience" },
+    { "value": "4", "label": "Roles held across design and visa processing" },
+    { "value": "3", "label": "Business ventures founded and personally run" },
+    { "value": "3.92", "label": "HSC GPA, Business Studies" }
+  ],
   "socials": [
     { "type": "whatsapp", "label": "WhatsApp (Personal)", "value": "8801643573300" },
     { "type": "whatsapp", "label": "WhatsApp (Business)", "value": "8801568014168" },
@@ -119,5 +126,10 @@
       "url": "",
       "icon": "🌙"
     }
+  ],
+  "projects": [
+    { "folder": "Graphic Design", "items": [] },
+    { "folder": "Motion Video Editing", "items": [] },
+    { "folder": "Visa Documentation Samples", "items": [] }
   ]
 }

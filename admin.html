@@ -63,8 +63,23 @@
         <div class="field"><label>Email</label><input id="pEmail"></div>
         <div class="field"><label>Phone numbers (comma separated, for display only)</label><input id="pPhones"></div>
         <div class="field" style="grid-column:1/-1"><label>Photo path (upload the image to the assets/ folder in GitHub first, then point here)</label><input id="pPhoto"></div>
+        <div class="field" style="grid-column:1/-1"><label>CV file path (upload your CV PDF to assets/ in GitHub, then point here — powers the "Curriculum Vitae" download button)</label><input id="pCv"></div>
       </div>
       <div class="field"><label>Summary</label><textarea id="pSummary" rows="3"></textarea></div>
+    </div>
+
+    <div class="panel">
+      <h2>Achievements</h2>
+      <p class="hint">Shown as a bold highlight band under About — a big number/value plus what it means. Keep values short (e.g. "3+", "50K+", "98%").</p>
+      <div id="achievementsList"></div>
+      <button class="btn btn-sm" id="btnAddAchievement">+ Add achievement</button>
+    </div>
+
+    <div class="panel">
+      <h2>Work / Projects gallery</h2>
+      <p class="hint">Organize your real work into folders (categories) people can browse — e.g. Graphic Design, Motion Video Editing. First upload each image to the <code>assets/</code> folder in GitHub (an <code>assets/work/</code> subfolder keeps things tidy), then reference its path here. Leave a folder empty and the site shows a friendly "nothing here yet" placeholder.</p>
+      <div id="foldersList"></div>
+      <button class="btn btn-sm" id="btnAddFolder">+ Add folder</button>
     </div>
 
     <div class="panel">
