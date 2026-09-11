@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Portfolio Content Editor</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="admin">
+<div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="admin-wrap">
+  <div class="admin-header">
+    <div class="admin-title">Portfolio <span>Admin</span></div>
+    <div id="connState" style="font-size:.82rem;color:var(--text-dim)"></div>
+  </div>
+
+  <!-- Setup / connect panel -->
+  <div class="panel" id="setupPanel">
+    <h2>Connect to your GitHub repo</h2>
+    <p class="hint">This admin page edits <code>data.json</code> directly inside your GitHub repo using a Personal Access Token. The token is saved only in this browser's local storage — it is never uploaded anywhere except directly to GitHub's API.</p>
+    <div class="grid-2">
+      <div class="field">
+        <label>GitHub username / org</label>
+        <input id="cfgOwner" placeholder="e.g. abir-dev">
+      </div>
+      <div class="field">
+        <label>Repository name</label>
+        <input id="cfgRepo" placeholder="e.g. my-portfolio">
+      </div>
+      <div class="field">
+        <label>Branch</label>
+        <input id="cfgBranch" placeholder="main" value="main">
+      </div>
+      <div class="field">
+        <label>Personal Access Token</label>
+        <input id="cfgToken" type="password" placeholder="github_pat_...">
+      </div>
+    </div>
+    <p class="locked-note">Create a <b>fine-grained token</b> at github.com → Settings → Developer settings → Personal access tokens → Fine-grained tokens. Give it access to only this one repository, with <b>Contents: Read and write</b> permission — nothing else.</p>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-primary" id="btnConnect">Connect & Load</button>
+      <button class="btn btn-ghost" id="btnForget" style="display:none;">Forget saved token</button>
+    </div>
+    <div class="status-msg" id="setupStatus"></div>
+  </div>
+
+  <!-- Editor (hidden until loaded) -->
+  <div id="editor" style="display:none;">
+
+    <div class="panel">
+      <h2>Profile</h2>
+      <p class="hint">Core details shown in the hero and about section.</p>
+      <div class="grid-2">
+        <div class="field"><label>Full name</label><input id="pName"></div>
+        <div class="field"><label>Short name (used in "Hi, I'm ___")</label><input id="pShortName"></div>
+        <div class="field"><label>Title / role</label><input id="pTitle"></div>
+        <div class="field"><label>Location</label><input id="pLocation"></div>
+        <div class="field"><label>Email</label><input id="pEmail"></div>
+        <div class="field"><label>Phone numbers (comma separated)</label><input id="pPhones"></div>
+        <div class="field"><label>WhatsApp link</label><input id="pWhatsapp"></div>
+        <div class="field"><label>Behance / portfolio link</label><input id="pBehance"></div>
+        <div class="field"><label>Photo path (upload the image to the assets/ folder in GitHub first, then point here)</label><input id="pPhoto"></div>
+      </div>
+      <div class="field"><label>Summary</label><textarea id="pSummary" rows="3"></textarea></div>
+    </div>
+
+    <div class="panel">
+      <h2>Business ventures / links</h2>
+      <p class="hint">Add or remove the business pages you want to showcase — e.g. Khalifa, 1% Solution, Sa'ādah. Leave URL blank to show "Link coming soon".</p>
+      <div id="venturesList"></div>
+      <button class="btn btn-sm" id="btnAddVenture">+ Add venture</button>
+    </div>
+
+    <div class="panel">
+      <h2>Extra links</h2>
+      <p class="hint">Any other links you want listed (social profiles, shop links, etc).</p>
+      <div id="linksList"></div>
+      <button class="btn btn-sm" id="btnAddLink">+ Add link</button>
+    </div>
+
+    <div class="panel">
+      <h2>Skills</h2>
+      <div id="skillsList"></div>
+      <button class="btn btn-sm" id="btnAddSkillGroup">+ Add skill group</button>
+    </div>
+
+    <div class="panel">
+      <h2>Experience</h2>
+      <div id="expList"></div>
+      <button class="btn btn-sm" id="btnAddExp">+ Add job</button>
+    </div>
+
+    <div class="panel">
+      <h2>Education</h2>
+      <div id="eduList"></div>
+      <button class="btn btn-sm" id="btnAddEdu">+ Add education</button>
+    </div>
+
+    <div class="save-bar">
+      <div class="save-bar-inner">
+        <span id="saveHint" style="font-size:.82rem;color:var(--text-dim)">Unsaved changes are kept only in this tab until you save.</span>
+        <button class="btn btn-primary btn-sm" id="btnSave">Save to GitHub</button>
+      </div>
+    </div>
+    <div class="status-msg" id="saveStatus" style="max-width:640px;margin:14px auto 0;"></div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

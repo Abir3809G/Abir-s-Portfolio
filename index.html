@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Md Aiyub Bhuyan Abir — Portfolio</title>
+<meta name="description" content="Graphic Designer, Motion Editor & Student Visa Processing Specialist — portfolio of Md Aiyub Bhuyan Abir.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="grain"></div>
+
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#home" class="brand"><span>Abir</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#ventures">Ventures</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="container hero-inner">
+    <div class="reveal in">
+      <div class="eyebrow"><span class="dot"></span> Available for freelance & design work</div>
+      <h1>Hi, I'm <span class="grad" id="heroName">Abir</span> 👋</h1>
+      <div class="hero-title" id="heroTitle"></div>
+      <p class="desc" id="heroSummary"></p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn btn-primary">Get in touch</a>
+        <a href="#" id="behanceLink" target="_blank" rel="noopener" class="btn btn-ghost">View Behance ↗</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="ring"></div>
+      <img id="heroPhoto" src="assets/profile.jpg" alt="Portrait">
+      <div class="badge" id="heroLocation">📍 Location</div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">About</div>
+      <h2>A little about my work</h2>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <p id="aboutSummary" style="color:var(--text-dim)"></p>
+        <div class="stat-row">
+          <div class="stat"><b id="statExp">3+</b><span>Years Experience</span></div>
+          <div class="stat"><b id="statVentures">3</b><span>Business Ventures</span></div>
+          <div class="stat"><b id="statSkills">5+</b><span>Skill Areas</span></div>
+        </div>
+      </div>
+      <ul class="info-list reveal">
+        <li><b>Name</b><span id="infoName"></span></li>
+        <li><b>Title</b><span id="infoTitle"></span></li>
+        <li><b>Location</b><span id="infoLocation"></span></li>
+        <li><b>Email</b><span id="infoEmail"></span></li>
+        <li><b>Phone</b><span id="infoPhone"></span></li>
+        <li><b>Languages</b><span>Bangla (Native), English (Fluent)</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Skills</div>
+      <h2>What I work with</h2>
+      <p>A blend of creative design tools and operational/documentation skills built across real jobs.</p>
+    </div>
+    <div class="skills-grid" id="skillsGrid"></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Experience</div>
+      <h2>Where I've worked</h2>
+    </div>
+    <div class="timeline" id="timeline"></div>
+    <div class="edu-grid" id="eduGrid"></div>
+  </div>
+</section>
+
+<section id="ventures">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-tag">Ventures</div>
+      <h2>Business pages I run</h2>
+      <p>Alongside design work, I manage a few of my own social business pages.</p>
+    </div>
+    <div class="venture-grid" id="ventureGrid"></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="contact-box reveal">
+      <h2>Let's build something together</h2>
+      <p>Open to freelance design, motion editing, social media management, or visa documentation support. Reach out anytime.</p>
+      <div class="contact-actions">
+        <a href="#" id="waLink" target="_blank" rel="noopener" class="btn btn-primary">WhatsApp Me</a>
+        <a href="#" id="emailLink" class="btn btn-ghost">Email</a>
+        <a href="#" id="behanceLink2" target="_blank" rel="noopener" class="btn btn-ghost">Behance ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© <span id="year"></span> <span id="footerName">Md Aiyub Bhuyan Abir</span>. Built with care.</p>
+  </div>
+</footer>
+
+<script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+{
+  "profile": {
+    "name": "Md Aiyub Bhuyan Abir",
+    "shortName": "Abir",
+    "title": "Senior Graphic Designer & Student Visa Processing Specialist",
+    "location": "Bandar, Narayanganj, Bangladesh",
+    "summary": "Creative and detail-oriented professional with hands-on experience in graphic design, motion video editing, social media marketing, student visa file processing, and professional documentation. Skilled in managing application-related documentation workflows with accuracy, organization, and professional presentation.",
+    "photo": "assets/profile.jpg",
+    "email": "abir16032002@gmail.com",
+    "phones": ["01643573300", "01568014168"],
+    "whatsapp": "https://wa.me/8801974014168",
+    "behance": "https://www.behance.net/mdaiyuabir"
+  },
+  "skills": [
+    {
+      "category": "Graphic Design",
+      "items": ["Adobe Photoshop", "Adobe Illustrator", "Social Media Poster Design", "Promotional & Advertising Design", "Professional Document Design"]
+    },
+    {
+      "category": "Motion & Video",
+      "items": ["Adobe Premiere Pro", "Adobe After Effects", "Social Media Video Editing", "Promotional Motion Graphics"]
+    },
+    {
+      "category": "Social Media Marketing",
+      "items": ["Content Planning", "Facebook Advertising Support", "Page Management", "Marketing Creative Development"]
+    },
+    {
+      "category": "Office & Data",
+      "items": ["Advanced MS Excel", "Excel Formulas & Functions", "VBA Automation", "Microsoft Word", "Financial Data Management"]
+    },
+    {
+      "category": "Documentation",
+      "items": ["Student Visa File Processing", "SOP Preparation Support", "School Application Documentation", "End-to-End File Management"]
+    }
+  ],
+  "experience": [
+    {
+      "role": "Senior Graphic Designer & Student Visa Processing Specialist",
+      "company": "Visa Processing & Education Consultancy Firm",
+      "period": "April 2026 – Present",
+      "points": [
+        "Independently manage end-to-end student visa file processing",
+        "Prepare, organize, edit, and maintain application documents with a strong focus on accuracy and presentation",
+        "Create professional designs and visual materials according to organizational requirements",
+        "Utilize MS Excel and other office tools for data management"
+      ]
+    },
+    {
+      "role": "Senior Graphic Designer & Student Visa Processing Specialist",
+      "company": "Visa Processing & Education Consultancy Firm",
+      "period": "October 2025 – March 2026",
+      "points": [
+        "Managed a wide range of student visa file processing responsibilities from beginning to end",
+        "Designed and edited professional documents based on specific requirements",
+        "Maintained accuracy, consistency, and proper organization across multiple files"
+      ]
+    },
+    {
+      "role": "Junior Graphic Designer & Motion Video Editor",
+      "company": "Rukaiya Shope",
+      "period": "January 2024 – July 2025",
+      "points": [
+        "Created daily social media posters and promotional visual content",
+        "Edited motion videos and advertising content for social media campaigns",
+        "Maintained consistency in visual branding across promotional materials"
+      ]
+    },
+    {
+      "role": "Computer Operator & Visa Processing Support",
+      "company": "FnF Visa Processing",
+      "period": "June 2023 – December 2023",
+      "points": [
+        "Assisted in processing and organization of Canada student visa application files",
+        "Managed financial transaction records and calculations using MS Excel"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Arts (BA) in Management",
+      "institute": "Abdul Latif Bhuiyan College",
+      "period": "Currently Studying — 3rd Year"
+    },
+    {
+      "degree": "Higher Secondary Certificate (HSC), Business Studies",
+      "institute": "BN College",
+      "period": "2020 — GPA 3.92"
+    },
+    {
+      "degree": "Secondary School Certificate (SSC), Business Studies",
+      "institute": "Bhasantek High School",
+      "period": "2018 — GPA 3.72"
+    }
+  ],
+  "ventures": [
+    {
+      "name": "Khalifa",
+      "description": "Islamic gadgets and products business page",
+      "url": "",
+      "icon": "🕌"
+    },
+    {
+      "name": "1% Solution",
+      "description": "Ladies cosmetics and gadgets business page",
+      "url": "",
+      "icon": "💄"
+    },
+    {
+      "name": "Sa'ādah",
+      "description": "Islamic content, women's products, clothing & cosmetics",
+      "url": "",
+      "icon": "🌙"
+    }
+  ],
+  "links": [
+    { "label": "Behance Portfolio", "url": "https://www.behance.net/mdaiyuabir" }
+  ]
+}
