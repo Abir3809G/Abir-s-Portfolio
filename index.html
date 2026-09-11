@@ -26,9 +26,16 @@
       <li><a href="#ventures">Ventures</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6a8.5 8.5 0 1 1-9.1-12 7 7 0 0 0 9.1 12z"/></svg>
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
   </div>
 </nav>
+<div class="cursor-glow" id="cursorGlow"></div>
 
 <section class="hero" id="home">
   <div class="container hero-inner">
@@ -50,6 +57,8 @@
   </div>
   <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
 </section>
+
+<div class="marquee"><div class="marquee-track" id="marqueeTrack"></div></div>
 
 <section id="about">
   <div class="container">
@@ -119,14 +128,15 @@
       <div class="contact-actions">
         <a href="#" id="waLink" target="_blank" rel="noopener" class="btn btn-primary">WhatsApp Me</a>
         <a href="#" id="emailLink" class="btn btn-ghost">Email</a>
-        <a href="#" id="behanceLink2" target="_blank" rel="noopener" class="btn btn-ghost">Behance ↗</a>
       </div>
+      <div class="connect-grid" id="connectGrid"></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="container">
+    <div class="footer-social" id="footerSocial"></div>
     <p>© <span id="year"></span> <span id="footerName">Md Aiyub Bhuyan Abir</span>. Built with care.</p>
   </div>
 </footer>

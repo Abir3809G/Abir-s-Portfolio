@@ -7,10 +7,18 @@
     "summary": "Creative and detail-oriented professional with hands-on experience in graphic design, motion video editing, social media marketing, student visa file processing, and professional documentation. Skilled in managing application-related documentation workflows with accuracy, organization, and professional presentation.",
     "photo": "assets/profile.jpg",
     "email": "abir16032002@gmail.com",
-    "phones": ["01643573300", "01568014168"],
-    "whatsapp": "https://wa.me/8801974014168",
-    "behance": "https://www.behance.net/mdaiyuabir"
+    "phones": ["01643573300", "01568014168"]
   },
+  "socials": [
+    { "type": "whatsapp", "label": "WhatsApp (Personal)", "value": "8801643573300" },
+    { "type": "whatsapp", "label": "WhatsApp (Business)", "value": "8801568014168" },
+    { "type": "facebook", "label": "Facebook", "url": "https://web.facebook.com/mdaiyubbhuyan.abir.1" },
+    { "type": "instagram", "label": "Instagram", "url": "https://www.instagram.com/aiyub_abir/" },
+    { "type": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/mdaiyubabir/" },
+    { "type": "telegram", "label": "Telegram", "url": "https://t.me/aiyubabir" },
+    { "type": "email", "label": "Email", "value": "abir16032002@gmail.com" },
+    { "type": "behance", "label": "Behance", "url": "https://www.behance.net/mdaiyuabir" }
+  ],
   "skills": [
     {
       "category": "Graphic Design",
@@ -111,8 +119,5 @@
       "url": "",
       "icon": "🌙"
     }
-  ],
-  "links": [
-    { "label": "Behance Portfolio", "url": "https://www.behance.net/mdaiyuabir" }
   ]
 }

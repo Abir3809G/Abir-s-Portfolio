@@ -61,10 +61,8 @@
         <div class="field"><label>Title / role</label><input id="pTitle"></div>
         <div class="field"><label>Location</label><input id="pLocation"></div>
         <div class="field"><label>Email</label><input id="pEmail"></div>
-        <div class="field"><label>Phone numbers (comma separated)</label><input id="pPhones"></div>
-        <div class="field"><label>WhatsApp link</label><input id="pWhatsapp"></div>
-        <div class="field"><label>Behance / portfolio link</label><input id="pBehance"></div>
-        <div class="field"><label>Photo path (upload the image to the assets/ folder in GitHub first, then point here)</label><input id="pPhoto"></div>
+        <div class="field"><label>Phone numbers (comma separated, for display only)</label><input id="pPhones"></div>
+        <div class="field" style="grid-column:1/-1"><label>Photo path (upload the image to the assets/ folder in GitHub first, then point here)</label><input id="pPhoto"></div>
       </div>
       <div class="field"><label>Summary</label><textarea id="pSummary" rows="3"></textarea></div>
     </div>
@@ -77,10 +75,10 @@
     </div>
 
     <div class="panel">
-      <h2>Extra links</h2>
-      <p class="hint">Any other links you want listed (social profiles, shop links, etc).</p>
-      <div id="linksList"></div>
-      <button class="btn btn-sm" id="btnAddLink">+ Add link</button>
+      <h2>Connect / social links</h2>
+      <p class="hint">These show up as icon buttons in your Contact section and footer. Add as many as you like — WhatsApp numbers, Facebook, Instagram, LinkedIn, Telegram, email, Behance, or any other website.</p>
+      <div id="socialsList"></div>
+      <button class="btn btn-sm" id="btnAddSocial">+ Add social link</button>
     </div>
 
     <div class="panel">

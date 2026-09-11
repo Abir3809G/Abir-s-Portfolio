@@ -153,7 +153,7 @@
     var d = state.data;
     d.profile = d.profile || {};
     d.ventures = d.ventures || [];
-    d.links = d.links || [];
+    d.socials = d.socials || [];
     d.skills = d.skills || [];
     d.experience = d.experience || [];
     d.education = d.education || [];
@@ -164,13 +164,11 @@
     bindText('pLocation', function(){ return d.profile.location; }, function(v){ d.profile.location = v; });
     bindText('pEmail', function(){ return d.profile.email; }, function(v){ d.profile.email = v; });
     bindText('pPhones', function(){ return (d.profile.phones||[]).join(', '); }, function(v){ d.profile.phones = v.split(',').map(function(s){return s.trim();}).filter(Boolean); });
-    bindText('pWhatsapp', function(){ return d.profile.whatsapp; }, function(v){ d.profile.whatsapp = v; });
-    bindText('pBehance', function(){ return d.profile.behance; }, function(v){ d.profile.behance = v; });
     bindText('pPhoto', function(){ return d.profile.photo; }, function(v){ d.profile.photo = v; });
     bindText('pSummary', function(){ return d.profile.summary; }, function(v){ d.profile.summary = v; });
 
     renderVentures();
-    renderLinks();
+    renderSocials();
     renderSkills();
     renderExperience();
     renderEducation();
@@ -213,27 +211,62 @@
     renderVentures();
   });
 
-  // ---------- generic links ----------
-  function renderLinks(){
-    var wrap = document.getElementById('linksList');
+  // ---------- socials (connect links) ----------
+  var SOCIAL_TYPES = [
+    ['whatsapp', 'WhatsApp'],
+    ['facebook', 'Facebook'],
+    ['instagram', 'Instagram'],
+    ['linkedin', 'LinkedIn'],
+    ['telegram', 'Telegram'],
+    ['email', 'Email'],
+    ['behance', 'Behance'],
+    ['website', 'Website / other']
+  ];
+  function socialTypeOptions(selected){
+    return SOCIAL_TYPES.map(function(t){
+      return '<option value="' + t[0] + '"' + (t[0] === selected ? ' selected' : '') + '>' + t[1] + '</option>';
+    }).join('');
+  }
+  function renderSocials(){
+    var wrap = document.getElementById('socialsList');
     wrap.innerHTML = '';
-    state.data.links.forEach(function(l, i){
+    state.data.socials.forEach(function(s, i){
+      var isValueType = (s.type === 'whatsapp' || s.type === 'email');
+      var valueLabel = s.type === 'whatsapp' ? 'Phone number (with country code, no + or spaces, e.g. 8801XXXXXXXXX)' : 'Email address';
       var card = rowCard(
-        '<div class="row-card-head"><b>Link ' + (i+1) + '</b><button class="btn btn-sm btn-danger js-remove">Remove</button></div>' +
+        '<div class="row-card-head"><b>Social ' + (i+1) + '</b><button class="btn btn-sm btn-danger js-remove">Remove</button></div>' +
         '<div class="grid-2">' +
-          '<div class="field"><label>Label</label><input class="js-label" value="' + attr(l.label) + '"></div>' +
-          '<div class="field"><label>URL</label><input class="js-url" value="' + attr(l.url) + '"></div>' +
+          '<div class="field"><label>Type</label><select class="js-type">' + socialTypeOptions(s.type) + '</select></div>' +
+          '<div class="field"><label>Label (shown under the icon)</label><input class="js-label" value="' + attr(s.label) + '"></div>' +
+          '<div class="field js-value-field" style="grid-column:1/-1"><label class="js-value-label">' + valueLabel + '</label>' +
+            '<input class="js-value" value="' + attr(isValueType ? s.value : s.url) + '"></div>' +
         '</div>',
-        function(){ state.data.links.splice(i,1); renderLinks(); }
+        function(){ state.data.socials.splice(i,1); renderSocials(); }
       );
-      card.querySelector('.js-label').addEventListener('input', function(e){ l.label = e.target.value; });
-      card.querySelector('.js-url').addEventListener('input', function(e){ l.url = e.target.value; });
+      card.querySelector('.js-label').addEventListener('input', function(e){ s.label = e.target.value; });
+      var typeSelect = card.querySelector('.js-type');
+      var valueInput = card.querySelector('.js-value');
+      var valueLabelEl = card.querySelector('.js-value-label');
+      function syncValueLabel(){
+        var t = typeSelect.value;
+        valueLabelEl.textContent = t === 'whatsapp'
+          ? 'Phone number (with country code, no + or spaces, e.g. 8801XXXXXXXXX)'
+          : t === 'email' ? 'Email address' : 'Profile / page URL';
+      }
+      typeSelect.addEventListener('change', function(){
+        s.type = typeSelect.value;
+        syncValueLabel();
+      });
+      valueInput.addEventListener('input', function(e){
+        if (s.type === 'whatsapp' || s.type === 'email') s.value = e.target.value;
+        else s.url = e.target.value;
+      });
       wrap.appendChild(card);
     });
   }
-  document.getElementById('btnAddLink').addEventListener('click', function(){
-    state.data.links.push({ label: 'New link', url: '' });
-    renderLinks();
+  document.getElementById('btnAddSocial').addEventListener('click', function(){
+    state.data.socials.push({ type: 'website', label: 'New link', url: '' });
+    renderSocials();
   });
 
   // ---------- skills ----------
