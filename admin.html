@@ -7,12 +7,10 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="admin">
-<div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-
 <div class="admin-wrap">
   <div class="admin-header">
     <div class="admin-title">Portfolio <span>Admin</span></div>
@@ -59,13 +57,25 @@
         <div class="field"><label>Full name</label><input id="pName"></div>
         <div class="field"><label>Short name (used in "Hi, I'm ___")</label><input id="pShortName"></div>
         <div class="field"><label>Title / role</label><input id="pTitle"></div>
+        <div class="field" style="grid-column:1/-1"><label>Rotating hero titles (comma separated — typed out one by one under your name, e.g. "Senior Graphic Designer, Motion Video Editor, Basic HTML Developer")</label><input id="pRoles"></div>
         <div class="field"><label>Location</label><input id="pLocation"></div>
         <div class="field"><label>Email</label><input id="pEmail"></div>
         <div class="field"><label>Phone numbers (comma separated, for display only)</label><input id="pPhones"></div>
+        <div class="field"><label>Languages</label><input id="pLanguages"></div>
         <div class="field" style="grid-column:1/-1"><label>Photo path (upload the image to the assets/ folder in GitHub first, then point here)</label><input id="pPhoto"></div>
         <div class="field" style="grid-column:1/-1"><label>CV file path (upload your CV PDF to assets/ in GitHub, then point here — powers the "Curriculum Vitae" download button)</label><input id="pCv"></div>
       </div>
-      <div class="field"><label>Summary</label><textarea id="pSummary" rows="3"></textarea></div>
+      <div class="field"><label>Summary (used in the hero section)</label><textarea id="pSummary" rows="3"></textarea></div>
+      <div class="field"><label>About bio (used in the "Who I Am" section — a more personal paragraph)</label><textarea id="pAboutBio" rows="3"></textarea></div>
+      <div class="field"><label>Quote (shown in the dark contact strip)</label><input id="pQuote"></div>
+      <div class="field"><label>Interests (shown in the footer)</label><textarea id="pInterests" rows="2"></textarea></div>
+    </div>
+
+    <div class="panel">
+      <h2>Personal Strengths</h2>
+      <p class="hint">Short highlight lines shown as a checklist between Skills and Experience.</p>
+      <div id="strengthsListAdmin"></div>
+      <button class="btn btn-sm" id="btnAddStrength">+ Add strength</button>
     </div>
 
     <div class="panel">

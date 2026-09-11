@@ -7,135 +7,126 @@
 <meta name="description" content="Graphic Designer, Motion Editor & Student Visa Processing Specialist — portfolio of Md Aiyub Bhuyan Abir.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="bg-blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-<div class="grain"></div>
-<div class="scroll-progress" id="scrollProgress"></div>
-
-<nav class="nav" id="nav">
-  <div class="container nav-inner">
-    <a href="#home" class="brand"><span>Abir</span></a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#achievements">Achievements</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#work">Work</a></li>
-      <li><a href="#ventures">Ventures</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+<header id="nav">
+  <div class="container nav">
+    <a class="brand" href="#home"><span class="logo">AB</span><span id="brandName">Md Aiyub Bhuyan Abir<small>Portfolio</small></span></a>
+    <nav id="navLinks">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#ventures">Ventures</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact</a>
+    </nav>
     <div class="nav-right">
-      <a href="#" id="navCvLink" download class="nav-cv">Download CV ⭳</a>
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark">
         <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
         <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6a8.5 8.5 0 1 1-9.1-12 7 7 0 0 0 9.1 12z"/></svg>
       </button>
+      <a href="#" id="navCvLink" download class="cv-btn">↓ Download CV</a>
       <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
     </div>
   </div>
-</nav>
-<div class="cursor-glow" id="cursorGlow"></div>
+</header>
 
-<section class="hero" id="home">
-  <div class="container hero-inner">
+<main id="home">
+  <section class="container hero">
     <div class="reveal in">
-      <div class="eyebrow"><span class="dot"></span> Available for freelance & design work</div>
-      <h1>Hi, I'm <span class="grad" id="heroName">Abir</span> 👋</h1>
-      <div class="hero-title" id="heroTitle"></div>
-      <p class="desc" id="heroSummary"></p>
-      <div class="hero-cta">
-        <a href="#contact" class="btn btn-primary">Get in touch</a>
-        <a href="#" id="behanceLink" target="_blank" rel="noopener" class="btn btn-ghost">View Behance ↗</a>
-        <a href="#" id="cvLink" download class="btn btn-ghost">Curriculum Vitae ⭳</a>
+      <div class="kicker">Creative Professional · Bangladesh</div>
+      <h1>Hello, I'm<br><span id="heroFullName"></span></h1>
+      <div class="hero-title"><span id="heroTitle"></span><span class="type-cursor" aria-hidden="true">|</span></div>
+      <div class="location" id="heroLocation">● Location</div>
+      <p class="summary" id="heroSummary"></p>
+      <div class="actions">
+        <a href="#" id="heroHireLink" class="primary">Hire Me ↗</a>
+        <a href="#gallery" class="secondary">View My Work</a>
       </div>
-      <div class="hero-socials" id="heroSocials"></div>
+      <div class="socials" id="heroSocials"></div>
     </div>
-    <div class="hero-photo">
-      <div class="blob-shape"></div>
-      <div class="ring"></div>
-      <img id="heroPhoto" src="assets/profile.jpg" alt="Portrait">
-      <div class="badge" id="heroLocation">📍 Location</div>
-      <div class="hero-badge hb-1">Ps</div>
-      <div class="hero-badge hb-2">Ai</div>
-      <div class="hero-badge hb-4">Ae</div>
+    <div class="hero-art">
+      <div class="side-note">Design<br>Edit<br>Create<br>Process<br>Grow</div>
+      <img id="heroPhoto" src="assets/profile.jpg" alt="Md Aiyub Bhuyan Abir">
     </div>
-    <div class="hero-script" aria-hidden="true">Design · Edit · Create · Process · Grow</div>
-  </div>
-  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
-</section>
+  </section>
 
-<div class="marquee"><div class="marquee-track" id="marqueeTrack"></div></div>
-
-<section id="about">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">About</div>
-      <h2>A little about my work</h2>
-    </div>
-    <div class="about-grid">
-      <div class="reveal">
-        <p id="aboutSummary" style="color:var(--text-dim)"></p>
+  <section id="about" class="section white">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-photo"><img id="aboutPhoto" src="assets/profile.jpg" alt="Abir portrait"></div>
+        <div class="about-copy">
+          <div class="eyebrow">About Me</div>
+          <h2>Who I Am</h2>
+          <p id="aboutBio"></p>
+          <ul class="quick-facts" id="quickFacts"></ul>
+          <div class="signature" id="aboutSignature">Abir</div>
+        </div>
       </div>
-      <ul class="info-list reveal">
-        <li><b>Name</b><span id="infoName"></span></li>
-        <li><b>Title</b><span id="infoTitle"></span></li>
-        <li><b>Location</b><span id="infoLocation"></span></li>
-        <li><b>Email</b><span id="infoEmail"></span></li>
-        <li><b>Phone</b><span id="infoPhone"></span></li>
-        <li><b>Languages</b><span>Bangla (Native), English (Fluent)</span></li>
-      </ul>
+      <div class="stats" id="achievementsGrid"></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="achievements">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">Achievements</div>
-      <h2>What I've built so far</h2>
+  <section id="contact" class="contact-strip">
+    <div class="container contact-row" id="contactRow">
+      <div class="quote" id="contactQuote"></div>
     </div>
-    <div class="achieve-grid" id="achievementsGrid"></div>
-  </div>
-</section>
+  </section>
 
-<section id="skills">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">Skills</div>
-      <h2>What I work with</h2>
-      <p>A blend of creative design tools and operational/documentation skills built across real jobs.</p>
+  <section id="skills" class="section">
+    <div class="container">
+      <div class="section-head"><div><div class="eyebrow">My Skills</div><h2>What I Do Best</h2></div></div>
+      <div class="skills" id="skillsGrid"></div>
     </div>
-    <div class="skills-grid" id="skillsGrid"></div>
-  </div>
-</section>
+  </section>
 
-<section id="experience">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">Experience</div>
-      <h2>Where I've worked</h2>
+  <section id="strengths" class="section">
+    <div class="container">
+      <div class="section-head"><div><div class="eyebrow">Personal Strengths</div><h2>What I Bring to the Table</h2></div></div>
+      <ul class="strengths-list" id="strengthsList"></ul>
     </div>
-    <div class="timeline" id="timeline"></div>
-    <div class="edu-grid" id="eduGrid"></div>
-  </div>
-</section>
+  </section>
 
-<section id="work">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">Work</div>
-      <h2>Selected work</h2>
-      <p>Browse by category. New pieces get added here as I finish them.</p>
+  <section id="experience" class="section white">
+    <div class="container two-col">
+      <div>
+        <div class="eyebrow">My Experience</div>
+        <h2>Work Experience</h2>
+        <div class="timeline" id="timeline"></div>
+      </div>
+      <div id="education">
+        <div class="eyebrow">My Education</div>
+        <h2>Education</h2>
+        <div id="eduList" style="margin-top:25px"></div>
+      </div>
     </div>
-    <div class="folder-tabs" id="folderTabs"></div>
-    <div class="work-grid" id="workGrid"></div>
-  </div>
-</section>
+  </section>
+
+  <section id="ventures" class="section">
+    <div class="container">
+      <div class="eyebrow">My Ventures</div>
+      <h2>Business Ventures</h2>
+      <div class="ventures" id="ventureGrid" style="margin-top:30px"></div>
+    </div>
+  </section>
+
+  <section id="gallery" class="section white">
+    <div class="container">
+      <div class="eyebrow">My Portfolio</div>
+      <h2>Portfolio / Work Gallery</h2>
+      <div class="gallery" id="galleryCards" style="margin-top:30px"></div>
+      <div class="work-panel" id="workPanel">
+        <div class="folder-tabs" id="folderTabs"></div>
+        <div class="work-grid" id="workGrid"></div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
@@ -145,35 +136,29 @@
   </figure>
 </div>
 
-<section id="ventures">
-  <div class="container">
-    <div class="sec-head reveal">
-      <div class="sec-tag">Ventures</div>
-      <h2>Business pages I run</h2>
-      <p>Alongside design work, I manage a few of my own social business pages.</p>
-    </div>
-    <div class="venture-grid" id="ventureGrid"></div>
-  </div>
-</section>
-
-<section id="contact">
-  <div class="container">
-    <div class="contact-box reveal">
-      <h2>Let's build something together</h2>
-      <p>Open to freelance design, motion editing, social media management, or visa documentation support. Reach out anytime.</p>
-      <div class="contact-actions">
-        <a href="#" id="waLink" target="_blank" rel="noopener" class="btn btn-primary">WhatsApp Me</a>
-        <a href="#" id="emailLink" class="btn btn-ghost">Email</a>
-      </div>
-      <div class="connect-grid" id="connectGrid"></div>
-    </div>
-  </div>
-</section>
-
 <footer>
   <div class="container">
-    <div class="footer-social" id="footerSocial"></div>
-    <p>© <span id="year"></span> <span id="footerName">Md Aiyub Bhuyan Abir</span>. Built with care.</p>
+    <div class="footer-top">
+      <div>
+        <div class="brand"><span class="logo">AB</span><span id="footerBrandName">Md Aiyub Bhuyan Abir<small id="footerBrandTitle"></small></span></div>
+        <p class="footer-about" id="footerAbout">Creative design, motion editing, professional documentation and student visa processing — brought together with precision and purpose.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <div class="footer-links">
+          <a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#experience">Experience</a>
+          <a href="#education">Education</a><a href="#ventures">Ventures</a><a href="#gallery">Gallery</a><a href="#contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Follow Me</h4>
+        <div class="footer-social" id="footerSocial"></div>
+      </div>
+    </div>
+    <div class="bottom">
+      <span>© <span id="year"></span> <span id="footerName">Md Aiyub Bhuyan Abir</span>. All rights reserved.</span>
+      <span>Design · Creativity · Growth</span>
+    </div>
   </div>
 </footer>
 
