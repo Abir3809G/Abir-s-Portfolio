@@ -223,7 +223,13 @@
     {
       "folder": "Graphic Design",
       "thumbnail": "",
-      "items": []
+      "items": [
+        {
+          "title": "",
+          "image": "",
+          "link": ""
+        }
+      ]
     },
     {
       "folder": "Motion Video Editing",
