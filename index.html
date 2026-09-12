@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,7 +39,7 @@
 
 <main id="home">
   <section class="container hero">
-    <div class="reveal in">
+    <div class="pop-in">
       <div class="kicker">Creative Professional · Bangladesh</div>
       <h1>Hello, I'm<br><span id="heroFullName"></span></h1>
       <div class="hero-title"><span id="heroTitle"></span><span class="type-cursor" aria-hidden="true">|</span></div>
@@ -50,7 +51,7 @@
       </div>
       <div class="socials" id="heroSocials"></div>
     </div>
-    <div class="hero-art">
+    <div class="hero-art pop-in" style="animation-delay:.15s">
       <div class="side-note">Design<br>Edit<br>Create<br>Process<br>Grow</div>
       <img id="heroPhoto" src="assets/profile.jpg" alt="Md Aiyub Bhuyan Abir">
     </div>
@@ -59,8 +60,8 @@
   <section id="about" class="section white">
     <div class="container">
       <div class="about-grid">
-        <div class="about-photo"><img id="aboutPhoto" src="assets/profile.jpg" alt="Abir portrait"></div>
-        <div class="about-copy">
+        <div class="about-photo pop-in" style="animation-delay:.05s"><img id="aboutPhoto" src="assets/profile.jpg" alt="Abir portrait"></div>
+        <div class="about-copy pop-in" style="animation-delay:.15s">
           <div class="eyebrow">About Me</div>
           <h2>Who I Am</h2>
           <p id="aboutBio"></p>
@@ -74,32 +75,32 @@
 
   <section id="contact" class="contact-strip">
     <div class="container contact-row" id="contactRow">
-      <div class="quote" id="contactQuote"></div>
+      <div class="quote pop-in" id="contactQuote"></div>
     </div>
   </section>
 
   <section id="skills" class="section">
     <div class="container">
-      <div class="section-head"><div><div class="eyebrow">My Skills</div><h2>What I Do Best</h2></div></div>
+      <div class="section-head pop-in"><div><div class="eyebrow">My Skills</div><h2>What I Do Best</h2></div></div>
       <div class="skills" id="skillsGrid"></div>
     </div>
   </section>
 
   <section id="strengths" class="section">
     <div class="container">
-      <div class="section-head"><div><div class="eyebrow">Personal Strengths</div><h2>What I Bring to the Table</h2></div></div>
+      <div class="section-head pop-in"><div><div class="eyebrow">Personal Strengths</div><h2>What I Bring to the Table</h2></div></div>
       <ul class="strengths-list" id="strengthsList"></ul>
     </div>
   </section>
 
   <section id="experience" class="section white">
     <div class="container two-col">
-      <div>
+      <div class="pop-in">
         <div class="eyebrow">My Experience</div>
         <h2>Work Experience</h2>
         <div class="timeline" id="timeline"></div>
       </div>
-      <div id="education">
+      <div id="education" class="pop-in" style="animation-delay:.1s">
         <div class="eyebrow">My Education</div>
         <h2>Education</h2>
         <div id="eduList" style="margin-top:25px"></div>
@@ -109,16 +110,16 @@
 
   <section id="ventures" class="section">
     <div class="container">
-      <div class="eyebrow">My Ventures</div>
-      <h2>Business Ventures</h2>
+      <div class="eyebrow pop-in">My Ventures</div>
+      <h2 class="pop-in">Business Ventures</h2>
       <div class="ventures" id="ventureGrid" style="margin-top:30px"></div>
     </div>
   </section>
 
   <section id="gallery" class="section white">
     <div class="container">
-      <div class="eyebrow">My Portfolio</div>
-      <h2>Portfolio / Work Gallery</h2>
+      <div class="eyebrow pop-in">My Portfolio</div>
+      <h2 class="pop-in">Portfolio / Work Gallery</h2>
       <div class="gallery" id="galleryCards" style="margin-top:30px"></div>
       <div class="work-panel" id="workPanel">
         <div class="folder-tabs" id="folderTabs"></div>

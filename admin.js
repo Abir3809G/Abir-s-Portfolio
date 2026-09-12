@@ -169,6 +169,7 @@
     bindText('pEmail', function(){ return d.profile.email; }, function(v){ d.profile.email = v; });
     bindText('pPhones', function(){ return (d.profile.phones||[]).join(', '); }, function(v){ d.profile.phones = v.split(',').map(function(s){return s.trim();}).filter(Boolean); });
     bindText('pPhoto', function(){ return d.profile.photo; }, function(v){ d.profile.photo = v; });
+    bindText('pAboutPhoto', function(){ return d.profile.aboutPhoto; }, function(v){ d.profile.aboutPhoto = v; });
     bindText('pCv', function(){ return d.profile.cv; }, function(v){ d.profile.cv = v; });
     bindText('pSummary', function(){ return d.profile.summary; }, function(v){ d.profile.summary = v; });
     bindText('pAboutBio', function(){ return d.profile.aboutBio; }, function(v){ d.profile.aboutBio = v; });
@@ -244,15 +245,18 @@
     wrap.innerHTML = '';
     state.data.projects.forEach(function(folder, fi){
       folder.items = folder.items || [];
+      folder.thumbnail = folder.thumbnail || '';
       var card = rowCard(
         '<div class="row-card-head"><b>Folder ' + (fi+1) + '</b><button class="btn btn-sm btn-danger js-remove-folder">Remove folder</button></div>' +
         '<div class="field"><label>Folder name</label><input class="js-folder-name" value="' + attr(folder.folder) + '"></div>' +
+        '<div class="field"><label>Thumbnail image (shown as the cover photo on this folder\'s card — upload to assets/work/ in GitHub first)</label><input class="js-thumb" value="' + attr(folder.thumbnail) + '" placeholder="assets/work/graphic-design-cover.jpg"></div>' +
         '<div class="js-items"></div>' +
         '<button type="button" class="btn btn-sm js-add-item">+ Add piece to this folder</button>',
         function(){ state.data.projects.splice(fi,1); renderFolders(); }
       );
       card.querySelector('.js-remove-folder').addEventListener('click', function(){ state.data.projects.splice(fi,1); renderFolders(); });
       card.querySelector('.js-folder-name').addEventListener('input', function(e){ folder.folder = e.target.value; });
+      card.querySelector('.js-thumb').addEventListener('input', function(e){ folder.thumbnail = e.target.value; });
 
       var itemsWrap = card.querySelector('.js-items');
       function renderItems(){

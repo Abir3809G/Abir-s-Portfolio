@@ -46,14 +46,14 @@
   }
 
   // ============================================================
-  // Social link helpers
+  // Social link helpers — real brand icons (Font Awesome, loaded in index.html)
   // ============================================================
-  var SOCIAL_ABBR = { whatsapp: 'WA', facebook: 'FB', instagram: 'IG', linkedin: 'IN', telegram: 'TG', email: '@', behance: 'BE', website: 'W' };
-  function abbrFor(social){
-    var type = social.type;
-    if (type === 'whatsapp' && /business/i.test(social.label || '')) return 'WB';
-    return SOCIAL_ABBR[type] || (type || 'W').slice(0,2).toUpperCase();
-  }
+  var ICON_CLASS = {
+    whatsapp: 'fa-brands fa-whatsapp', facebook: 'fa-brands fa-facebook-f', instagram: 'fa-brands fa-instagram',
+    linkedin: 'fa-brands fa-linkedin-in', telegram: 'fa-brands fa-telegram', email: 'fa-solid fa-envelope',
+    behance: 'fa-brands fa-behance', website: 'fa-solid fa-globe'
+  };
+  function iconClassFor(social){ return ICON_CLASS[social.type] || 'fa-solid fa-link'; }
   function hrefFor(social){
     if (social.type === 'whatsapp') return 'https://wa.me/' + String(social.value || '').replace(/\D/g,'');
     if (social.type === 'email') return 'mailto:' + (social.value || '');
@@ -78,7 +78,10 @@
     a.href = hrefFor(s);
     a.className = className || '';
     a.setAttribute('aria-label', s.label || s.type);
-    a.textContent = abbrFor(s);
+    a.title = s.label || s.type;
+    var icon = document.createElement('i');
+    icon.className = iconClassFor(s);
+    a.appendChild(icon);
     if (s.type !== 'email' && s.type !== 'whatsapp') { a.target = '_blank'; a.rel = 'noopener'; }
     return a;
   }
@@ -108,7 +111,7 @@
     var heroPhoto = document.getElementById('heroPhoto');
     if (heroPhoto && p.photo) heroPhoto.src = p.photo;
     var aboutPhoto = document.getElementById('aboutPhoto');
-    if (aboutPhoto && p.photo) aboutPhoto.src = p.photo;
+    if (aboutPhoto && (p.aboutPhoto || p.photo)) aboutPhoto.src = p.aboutPhoto || p.photo;
 
     // Hero + footer social rows
     var heroSocials = document.getElementById('heroSocials');
@@ -145,9 +148,10 @@
     // Personal strengths
     var strengthsList = document.getElementById('strengthsList');
     if (strengthsList){
-      (data.strengths || []).forEach(function(s){
+      (data.strengths || []).forEach(function(s, i){
         var li = document.createElement('li');
-        li.className = 'reveal in';
+        li.className = 'pop-in';
+        li.style.animationDelay = (i * 0.07) + 's';
         li.textContent = s;
         strengthsList.appendChild(li);
       });
@@ -159,9 +163,10 @@
     var achieveGrid = document.getElementById('achievementsGrid');
     if (achieveGrid){
       achieveGrid.style.setProperty('--stat-cols', String(Math.max((data.achievements || []).length, 1)));
-      (data.achievements || []).forEach(function(a){
+      (data.achievements || []).forEach(function(a, i){
         var tile = document.createElement('div');
-        tile.className = 'stat';
+        tile.className = 'stat pop-in';
+        tile.style.animationDelay = (i * 0.08) + 's';
         tile.innerHTML = '<strong>' + esc(a.value) + '</strong><span>' + esc(a.label) + '</span>';
         achieveGrid.appendChild(tile);
       });
@@ -176,9 +181,10 @@
       var items = [];
       waEntries.slice(0, 2).forEach(function(s){ items.push({ label: s.label || 'WhatsApp', value: s.value }); });
       if (emailEntry || p.email) items.push({ label: 'Email', value: (emailEntry && emailEntry.value) || p.email });
-      items.slice(0, 3).forEach(function(it){
+      items.slice(0, 3).forEach(function(it, i){
         var div = document.createElement('div');
-        div.className = 'contact-item';
+        div.className = 'contact-item pop-in';
+        div.style.animationDelay = (i * 0.08) + 's';
         div.innerHTML = '<b>' + esc(it.label) + '</b>' + esc(it.value || '');
         contactRow.appendChild(div);
       });
@@ -192,9 +198,10 @@
       return (words[0][0] + words[1][0]).toUpperCase();
     }
     var skillsGrid = document.getElementById('skillsGrid');
-    (data.skills || []).forEach(function(group){
+    (data.skills || []).forEach(function(group, i){
       var card = document.createElement('div');
-      card.className = 'skill reveal in';
+      card.className = 'skill pop-in';
+      card.style.animationDelay = (i * 0.08) + 's';
       var items = (group.items || []).map(function(item){ return '<li>' + esc(item) + '</li>'; }).join('');
       card.innerHTML = '<div class="skill-icon">' + esc(skillAbbr(group.category)) + '</div>' +
         '<h3>' + esc(group.category) + '</h3><ul>' + items + '</ul>';
@@ -203,9 +210,10 @@
 
     // Experience timeline
     var timeline = document.getElementById('timeline');
-    (data.experience || []).forEach(function(job){
+    (data.experience || []).forEach(function(job, i){
       var item = document.createElement('div');
-      item.className = 'job reveal in';
+      item.className = 'job pop-in';
+      item.style.animationDelay = (i * 0.08) + 's';
       var points = (job.points || []).map(function(pt){ return '<li>' + esc(pt) + '</li>'; }).join('');
       item.innerHTML =
         '<span class="date">' + esc(job.period) + '</span>' +
@@ -217,9 +225,10 @@
 
     // Education (its own highlighted column)
     var eduList = document.getElementById('eduList');
-    (data.education || []).forEach(function(ed){
+    (data.education || []).forEach(function(ed, i){
       var row = document.createElement('div');
-      row.className = 'edu reveal in';
+      row.className = 'edu pop-in';
+      row.style.animationDelay = (i * 0.08) + 's';
       row.innerHTML = '<div><h3>' + esc(ed.degree) + '</h3><p>' + esc(ed.institute) + '</p></div>' +
         '<span class="year">' + esc(ed.period) + '</span>';
       eduList.appendChild(row);
@@ -227,7 +236,7 @@
 
     // Ventures
     var ventureGrid = document.getElementById('ventureGrid');
-    (data.ventures || []).forEach(function(v){
+    (data.ventures || []).forEach(function(v, i){
       var inner = '<div><h3>' + (v.icon ? esc(v.icon) + ' ' : '') + esc(v.name) + '</h3><p>' + esc(v.description || '') + '</p></div>' +
         '<span class="arrow">↗</span>';
       var card;
@@ -237,7 +246,8 @@
       } else {
         card = document.createElement('div');
       }
-      card.className = 'venture reveal in';
+      card.className = 'venture pop-in';
+      card.style.animationDelay = (i * 0.08) + 's';
       card.innerHTML = inner;
       ventureGrid.appendChild(card);
     });
@@ -250,8 +260,6 @@
     setText('footerBrandTitle', p.title || '');
     if (p.interests) setText('footerAbout', p.interests);
 
-    // (Re)initialize scroll-reveal for newly injected nodes
-    initReveal();
     wireMailtoFallback();
   }
 
@@ -313,7 +321,11 @@
       folders.forEach(function(f, i){
         var count = (f.items || []).length;
         var card = document.createElement('div');
-        card.className = 'work reveal in' + (i === active ? ' active' : '');
+        card.className = 'work pop-in' + (i === active ? ' active' : '');
+        card.style.animationDelay = (i * 0.08) + 's';
+        if (f.thumbnail){
+          card.style.backgroundImage = 'linear-gradient(180deg, rgba(10,14,12,.08), rgba(10,14,12,.85)), url("' + esc(f.thumbnail) + '")';
+        }
         card.innerHTML = '<span class="mini">' + esc(MINI[f.folder] || 'FOLDER') + '</span>' +
           '<h3>' + esc(f.folder) + '</h3>' +
           '<p>' + (count ? (count + ' piece' + (count > 1 ? 's' : '')) : 'View Gallery →') + '</p>';
@@ -339,9 +351,10 @@
         grid.appendChild(empty);
         return;
       }
-      items.forEach(function(item){
+      items.forEach(function(item, i){
         var card = document.createElement('div');
-        card.className = 'work-card reveal in';
+        card.className = 'work-card pop-in';
+        card.style.animationDelay = (i * 0.06) + 's';
         card.innerHTML = '<img src="' + esc(item.image) + '" alt="' + esc(item.title || '') + '" loading="lazy">' +
           (item.title ? '<figcaption>' + esc(item.title) + '</figcaption>' : '');
         card.addEventListener('click', function(){ openLightbox(item.image, item.title || ''); });
@@ -406,21 +419,4 @@
     });
   }
 
-  // ---- Scroll reveal ----
-  var observer;
-  function initReveal(){
-    var targets = document.querySelectorAll('.reveal:not(.in)');
-    if (!observer){
-      observer = new IntersectionObserver(function(entries){
-        entries.forEach(function(entry){
-          if (entry.isIntersecting){
-            entry.target.classList.add('in');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-    }
-    targets.forEach(function(t){ observer.observe(t); });
-  }
-  initReveal();
 })();

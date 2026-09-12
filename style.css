@@ -108,10 +108,12 @@ header{ position: sticky; top:0; z-index:100; background: rgba(var(--bg-rgb),.9)
   .nav-toggle{ display:block; }
 }
 
-/* ===== Reveal-on-scroll ===== */
-.reveal{ opacity:0; transform: translateY(22px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
-.reveal.in{ opacity:1; transform:none; }
-@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; transition:none; } }
+/* ===== Entrance animation — plays once on load/creation, never gated on scroll
+   (a scroll-triggered version of this once left Skills blank until scrolled into
+   view, so every section now animates in on its own regardless of viewport). ===== */
+@keyframes popIn{ from{ opacity:0; transform: translateY(18px); } to{ opacity:1; transform:none; } }
+.pop-in{ opacity:0; animation: popIn .7s var(--ease) forwards; }
+@media (prefers-reduced-motion: reduce){ .pop-in{ animation:none; opacity:1; transform:none; } }
 
 /* ===== Hero ===== */
 .hero{ min-height:610px; display:grid; grid-template-columns:1.05fr .95fr; align-items:center; gap:20px; overflow:hidden; padding:50px 0 20px; }
@@ -133,6 +135,7 @@ header{ position: sticky; top:0; z-index:100; background: rgba(var(--bg-rgb),.9)
 .socials{ display:flex; gap:10px; flex-wrap:wrap; font-size:.7rem; color: var(--text); }
 .socials a{ width:32px; height:32px; border:1px solid var(--border); border-radius:50%; display:grid; place-items:center; font-weight:700; background: var(--surface); transition: all .2s; }
 .socials a:hover{ background: var(--accent-2); color:#fff; border-color: var(--accent-2); transform: translateY(-2px); }
+.socials a i{ font-size:14px; line-height:1; }
 .hero-art{ height:500px; position:relative; display:flex; justify-content:center; align-items:flex-end; }
 .hero-art::before{ content:''; position:absolute; width:360px; height:360px; border-radius:50%; background: var(--accent-2); right:60px; top:60px; }
 .hero-art::after{ content:''; position:absolute; width:400px; height:170px; right:0; top:30px; transform: rotate(-8deg); opacity:.6;
@@ -236,12 +239,12 @@ h2{ font-size: clamp(1.7rem, 3.4vw, 2.5rem); letter-spacing:-.02em; line-height:
 
 /* ===== Gallery / Work ===== */
 .gallery{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-.work{ height:230px; background:#273b2d; color:#fff; border-radius:12px; position:relative; overflow:hidden; padding:22px;
+.work{ height:230px; background:#273b2d; background-size:cover; background-position:center; color:#fff; border-radius:12px; position:relative; overflow:hidden; padding:22px;
   display:flex; flex-direction:column; justify-content:flex-end; cursor:pointer; border:2px solid transparent; transition: transform .2s; }
 .work:hover, .work.active{ transform: translateY(-4px); }
 .work.active{ border-color: var(--accent); }
-.work:nth-child(2){ background:#161b18; }
-.work:nth-child(3){ background:#5d625e; }
+.work:nth-child(2){ background-color:#161b18; }
+.work:nth-child(3){ background-color:#5d625e; }
 .work .mini{ position:absolute; top:18px; right:18px; border:1px solid rgba(255,255,255,.3); padding:5px 9px; border-radius:6px; font-size:.62rem; letter-spacing:.5px; }
 .work h3{ font-family:'Manrope',sans-serif; font-size:1.15rem; }
 .work p{ font-size:.72rem; opacity:.75; margin-top:4px; }
@@ -278,6 +281,7 @@ footer h4{ font-size:.68rem; text-transform:uppercase; letter-spacing:1.5px; mar
 .footer-social{ display:flex; gap:8px; flex-wrap:wrap; }
 .footer-social a{ font-size:.62rem; font-weight:700; border:1px solid #353a36; border-radius:50%; width:31px; height:31px; display:grid; place-items:center; color:#a9aea9; transition: all .2s; }
 .footer-social a:hover{ background:#fff; color:#111513; border-color:#fff; }
+.footer-social a i{ font-size:13px; line-height:1; }
 .bottom{ border-top:1px solid #2a2f2c; margin-top:40px; padding-top:18px; display:flex; justify-content:space-between; color:#777e78; font-size:.68rem; flex-wrap:wrap; gap:8px; }
 @media (max-width:900px){ .footer-top{ grid-template-columns:1fr 1fr; gap:28px; } }
 @media (max-width:600px){ .footer-top{ grid-template-columns:1fr; } .bottom{ flex-direction:column; } }
