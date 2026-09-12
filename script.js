@@ -435,7 +435,12 @@
     var section = document.getElementById('contactForm');
     var link = document.getElementById('contactFormLink');
     if (!section) return;
-    if (!formspreeId){
+    // Accept either a bare form ID ("maeyzrby") or the full URL a user might
+    // paste instead ("https://formspree.io/f/maeyzrby") — extract just the ID.
+    var raw = (formspreeId || '').trim();
+    var idMatch = raw.match(/([a-zA-Z0-9]+)\/?$/);
+    var id = idMatch ? idMatch[1] : '';
+    if (!id){
       section.style.display = 'none';
       if (link) link.style.display = 'none';
       return;
@@ -452,7 +457,7 @@
       if (status){ status.textContent = 'Sending…'; status.className = 'form-status'; }
       if (submitBtn) submitBtn.disabled = true;
       var data = new FormData(form);
-      fetch('https://formspree.io/f/' + formspreeId, {
+      fetch('https://formspree.io/f/' + id, {
         method: 'POST',
         body: data,
         headers: { 'Accept': 'application/json' }
