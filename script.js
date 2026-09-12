@@ -203,7 +203,10 @@
   }
 
   // ---- Fetch data (cache-bust lightly so edits via admin show up soon) ----
-  fetch('data.json', { cache: 'no-cache' })
+  // A timestamp query string forces every page load to bypass GitHub Pages'
+  // CDN cache for this file (not just the browser's own cache) — otherwise
+  // content edits made in the admin panel can take a while to show up live.
+  fetch('data.json?v=' + Date.now(), { cache: 'no-cache' })
     .then(function(r){ return r.json(); })
     .then(render)
     .catch(function(err){ console.error('Could not load data.json', err); });
@@ -512,14 +515,18 @@
     tick();
   }
 
-  // ---- Work / Projects gallery: dark folder cards + grid + lightbox ----
+  // ---- Work / Projects gallery: dark folder cards + combined full-screen
+  // filterable overlay (hash-routed "dedicated view" within the same page) ----
   function initWorkGallery(folders){
     var cardsWrap = document.getElementById('galleryCards');
     var grid = document.getElementById('workGrid');
-    var panel = document.getElementById('workPanel');
+    var overlay = document.getElementById('galleryOverlay');
+    var tabsWrap = document.getElementById('galleryFilterTabs');
+    var viewFullBtn = document.getElementById('viewFullGalleryBtn');
+    var backBtn = document.getElementById('galleryBack');
     if (!cardsWrap || !grid) return;
     folders = folders.filter(function(f){ return f && f.folder; });
-    if (!folders.length){ if (panel) panel.style.display = 'none'; return; }
+    if (!folders.length){ if (viewFullBtn) viewFullBtn.style.display = 'none'; return; }
 
     var MINI = { 'Graphic Design': 'PS · AI', 'Motion Video Editing': 'PR · AE', 'Visa Documentation Samples': 'DOCS' };
     var FOLDER_STYLE = {
@@ -527,34 +534,61 @@
       'Motion Video Editing': { icon: 'Pr', grad: 'linear-gradient(135deg,#c15a2e,#b5721e)' },
       'Visa Documentation Samples': { icon: '📄', grad: 'linear-gradient(135deg,#3a3f2e,#5c5647)' }
     };
-    var active = 0;
+    var ALL = 'All';
+    var currentFilter = ALL;
+
+    // Only count/show pieces that actually have an image — an empty "+ Add
+    // piece" row someone forgot to finish filling in (no image chosen yet)
+    // would otherwise render as a broken picture in the gallery.
+    function realItems(f){ return (f.items || []).filter(function(it){ return it && it.image; }); }
+
+    // Flatten every folder's real items into one tagged list, so the "All"
+    // filter and per-folder filters can share one render function.
+    function allTaggedItems(){
+      var out = [];
+      folders.forEach(function(f){
+        realItems(f).forEach(function(it){ out.push({ item: it, folder: f.folder }); });
+      });
+      return out;
+    }
 
     function renderCards(){
       cardsWrap.innerHTML = '';
-      folders.forEach(function(f, i){
-        var count = (f.items || []).length;
+      folders.forEach(function(f){
+        var count = realItems(f).length;
         var card = document.createElement('div');
-        card.className = 'work pop-in' + (i === active ? ' active' : '');
-        card.style.animationDelay = (i * 0.08) + 's';
+        card.className = 'work pop-in';
         if (f.thumbnail){
           card.style.backgroundImage = 'linear-gradient(180deg, rgba(10,14,12,.08), rgba(10,14,12,.85)), url("' + esc(f.thumbnail) + '")';
         }
         card.innerHTML = '<span class="mini">' + esc(MINI[f.folder] || 'FOLDER') + '</span>' +
           '<h3>' + esc(f.folder) + '</h3>' +
           '<p>' + (count ? (count + ' piece' + (count > 1 ? 's' : '')) : 'View Gallery →') + '</p>';
-        card.addEventListener('click', function(){
-          active = i; renderCards(); renderGrid();
-          grid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
+        card.addEventListener('click', function(){ openGalleryView(f.folder); });
         cardsWrap.appendChild(card);
       });
     }
-    function renderGrid(){
+
+    function renderTabs(){
+      if (!tabsWrap) return;
+      tabsWrap.innerHTML = '';
+      var names = [ALL].concat(folders.map(function(f){ return f.folder; }));
+      names.forEach(function(name){
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = name === ALL ? 'All' : name;
+        if (name === currentFilter) btn.classList.add('active');
+        btn.addEventListener('click', function(){ showOverlayForFilter(name, true); });
+        tabsWrap.appendChild(btn);
+      });
+    }
+
+    function renderOverlayGrid(){
       grid.innerHTML = '';
-      var items = (folders[active].items || []);
-      if (!items.length){
-        var fname = folders[active].folder;
-        var style = FOLDER_STYLE[fname] || { icon: '🗂️', grad: 'var(--grad)' };
+      var tagged = currentFilter === ALL ? allTaggedItems() : allTaggedItems().filter(function(t){ return t.folder === currentFilter; });
+      if (!tagged.length){
+        var fname = currentFilter === ALL ? 'Portfolio' : currentFilter;
+        var style = FOLDER_STYLE[currentFilter] || { icon: '🗂️', grad: 'var(--grad)' };
         var empty = document.createElement('div');
         empty.className = 'work-empty';
         empty.style.background = style.grad;
@@ -564,18 +598,67 @@
         grid.appendChild(empty);
         return;
       }
-      items.forEach(function(item, i){
+      tagged.forEach(function(t, i){
+        var item = t.item;
         var card = document.createElement('div');
         card.className = 'work-card pop-in';
-        card.style.animationDelay = (i * 0.06) + 's';
+        card.style.animationDelay = (Math.min(i, 12) * 0.05) + 's';
         card.innerHTML = '<img src="' + esc(item.image) + '" alt="' + esc(item.title || '') + '" loading="lazy">' +
           (item.title ? '<figcaption>' + esc(item.title) + '</figcaption>' : '');
         card.addEventListener('click', function(){ openLightbox(item.image, item.title || ''); });
         grid.appendChild(card);
       });
     }
+
+    function showOverlayForFilter(filterName, updateHash){
+      currentFilter = folders.some(function(f){ return f.folder === filterName; }) ? filterName : ALL;
+      renderTabs();
+      renderOverlayGrid();
+      if (updateHash){
+        var hash = currentFilter === ALL ? '#gallery-view' : ('#gallery-view:' + encodeURIComponent(currentFilter));
+        if (location.hash !== hash) history.pushState(null, '', hash);
+      }
+    }
+
+    function openGalleryView(filterName){
+      showOverlayForFilter(filterName || ALL, true);
+      if (overlay) overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      overlay && overlay.scrollTo(0, 0);
+    }
+
+    function closeGalleryView(updateHash){
+      if (overlay) overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      if (updateHash && /^#gallery-view/.test(location.hash)){
+        history.pushState(null, '', location.pathname + location.search + '#gallery');
+      }
+    }
+
+    function hashToFilter(hash){
+      var m = /^#gallery-view(?::(.*))?$/.exec(hash || '');
+      if (!m) return null;
+      return m[1] ? decodeURIComponent(m[1]) : ALL;
+    }
+
+    if (viewFullBtn) viewFullBtn.addEventListener('click', function(){ openGalleryView(ALL); });
+    if (backBtn) backBtn.addEventListener('click', function(){ closeGalleryView(true); });
+    if (overlay) overlay.addEventListener('click', function(e){ if (e.target === overlay) closeGalleryView(true); });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && overlay && overlay.classList.contains('open')) closeGalleryView(true);
+    });
+    window.addEventListener('hashchange', function(){
+      var f = hashToFilter(location.hash);
+      if (f !== null){ openGalleryView(f); }
+      else if (overlay && overlay.classList.contains('open')){ closeGalleryView(false); }
+    });
+
     renderCards();
-    renderGrid();
+
+    // Deep-link support: if the page was opened directly with a gallery-view
+    // hash (e.g. shared/bookmarked link), open straight into that view.
+    var initialFilter = hashToFilter(location.hash);
+    if (initialFilter !== null) openGalleryView(initialFilter);
   }
 
   function openLightbox(src, caption){

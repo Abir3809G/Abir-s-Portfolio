@@ -122,9 +122,8 @@
       <div class="eyebrow pop-in">My Portfolio</div>
       <h2 class="pop-in">Portfolio / Work Gallery</h2>
       <div class="gallery" id="galleryCards" style="margin-top:30px"></div>
-      <div class="work-panel" id="workPanel">
-        <div class="folder-tabs" id="folderTabs"></div>
-        <div class="work-grid" id="workGrid"></div>
+      <div style="text-align:center;margin-top:30px;">
+        <button class="secondary" id="viewFullGalleryBtn" type="button">View Full Gallery ↗</button>
       </div>
     </div>
   </section>
@@ -152,6 +151,17 @@
     <img id="lightboxImg" src="" alt="">
     <figcaption id="lightboxCaption"></figcaption>
   </figure>
+</div>
+
+<div class="gallery-overlay" id="galleryOverlay">
+  <div class="gallery-overlay-inner">
+    <div class="gallery-overlay-header">
+      <button class="gallery-back" id="galleryBack" type="button">← Back to Portfolio</button>
+      <div class="gallery-overlay-title">Full Gallery</div>
+    </div>
+    <div class="gallery-filter-tabs" id="galleryFilterTabs"></div>
+    <div class="work-grid" id="workGrid"></div>
+  </div>
 </div>
 
 <footer>
