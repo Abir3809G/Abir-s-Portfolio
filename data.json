@@ -3,23 +3,15 @@
     "name": "Md Aiyub Bhuyan Abir",
     "shortName": "Abir",
     "title": "Senior Graphic Designer & Student Visa Processing Specialist",
-    "roles": [
-      "Senior Graphic Designer",
-      "Motion Video Editor",
-      "Student Visa Processing Specialist",
-      "Basic HTML Developer"
-    ],
+    "roles": ["Senior Graphic Designer", "Motion Video Editor", "Student Visa Processing Specialist", "Basic HTML Developer"],
     "location": "Bandar, Narayanganj, Bangladesh",
     "summary": "Creative and detail-oriented professional with hands-on experience in graphic design, motion video editing, social media marketing, student visa file processing, and professional documentation. Skilled in managing application-related documentation workflows with accuracy, organization, and professional presentation.",
     "photo": "assets/profile.jpg",
     "aboutPhoto": "",
     "cv": "assets/Md_Aiyub_Bhuyan_Abir_CV.pdf",
-    "formspreeId": "maeyzrby",
+    "formspreeId": "",
     "email": "abir16032002@gmail.com",
-    "phones": [
-      "01643573300",
-      "01568014168"
-    ],
+    "phones": ["01643573300", "01568014168"],
     "aboutBio": "I'm Abir — a passionate graphic designer, video editor, and visa processing specialist. I love turning ideas into visual stories and helping students achieve their dream of studying abroad. I focus on quality, creativity, accuracy, and professional presentation in every project I work on.",
     "quote": "Creativity builds brands, but honesty builds trust.",
     "languages": "Bangla (Native), English (Fluent)",
@@ -33,108 +25,40 @@
     "Ability to balance creative, administrative, and technical responsibilities"
   ],
   "achievements": [
-    {
-      "value": "3+",
-      "label": "Years of professional design & documentation experience"
-    },
-    {
-      "value": "4",
-      "label": "Roles held across design and visa processing"
-    },
-    {
-      "value": "3",
-      "label": "Business ventures founded and personally run"
-    }
+    { "value": "3+", "label": "Years of professional design & documentation experience" },
+    { "value": "4", "label": "Roles held across design and visa processing" },
+    { "value": "3", "label": "Business ventures founded and personally run" }
   ],
   "socials": [
-    {
-      "type": "whatsapp",
-      "label": "WhatsApp (Personal)",
-      "value": "8801643573300"
-    },
-    {
-      "type": "whatsapp",
-      "label": "WhatsApp (Business)",
-      "value": "8801568014168"
-    },
-    {
-      "type": "facebook",
-      "label": "Facebook",
-      "url": "https://web.facebook.com/mdaiyubbhuyan.abir.1"
-    },
-    {
-      "type": "instagram",
-      "label": "Instagram",
-      "url": "https://www.instagram.com/aiyub_abir/"
-    },
-    {
-      "type": "linkedin",
-      "label": "LinkedIn",
-      "url": "https://www.linkedin.com/in/mdaiyubabir/"
-    },
-    {
-      "type": "telegram",
-      "label": "Telegram",
-      "url": "https://t.me/aiyubabir"
-    },
-    {
-      "type": "email",
-      "label": "Email",
-      "value": "abir16032002@gmail.com"
-    },
-    {
-      "type": "behance",
-      "label": "Behance",
-      "url": "https://www.behance.net/mdaiyuabir"
-    }
+    { "type": "whatsapp", "label": "WhatsApp (Personal)", "value": "8801643573300" },
+    { "type": "whatsapp", "label": "WhatsApp (Business)", "value": "8801568014168" },
+    { "type": "facebook", "label": "Facebook", "url": "https://web.facebook.com/mdaiyubbhuyan.abir.1" },
+    { "type": "instagram", "label": "Instagram", "url": "https://www.instagram.com/aiyub_abir/" },
+    { "type": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/mdaiyubabir/" },
+    { "type": "telegram", "label": "Telegram", "url": "https://t.me/aiyubabir" },
+    { "type": "email", "label": "Email", "value": "abir16032002@gmail.com" },
+    { "type": "behance", "label": "Behance", "url": "https://www.behance.net/mdaiyuabir" }
   ],
   "skills": [
     {
       "category": "Graphic Design",
-      "items": [
-        "Adobe Photoshop",
-        "Adobe Illustrator",
-        "Social Media Poster Design",
-        "Promotional & Advertising Design",
-        "Professional Document Design"
-      ]
+      "items": ["Adobe Photoshop", "Adobe Illustrator", "Social Media Poster Design", "Promotional & Advertising Design", "Professional Document Design"]
     },
     {
       "category": "Motion & Video",
-      "items": [
-        "Adobe Premiere Pro",
-        "Adobe After Effects",
-        "Social Media Video Editing",
-        "Promotional Motion Graphics"
-      ]
+      "items": ["Adobe Premiere Pro", "Adobe After Effects", "Social Media Video Editing", "Promotional Motion Graphics"]
     },
     {
       "category": "Social Media Marketing",
-      "items": [
-        "Content Planning",
-        "Facebook Advertising Support",
-        "Page Management",
-        "Marketing Creative Development"
-      ]
+      "items": ["Content Planning", "Facebook Advertising Support", "Page Management", "Marketing Creative Development"]
     },
     {
       "category": "Office & Data",
-      "items": [
-        "Advanced MS Excel",
-        "Excel Formulas & Functions",
-        "VBA Automation",
-        "Microsoft Word",
-        "Financial Data Management"
-      ]
+      "items": ["Advanced MS Excel", "Excel Formulas & Functions", "VBA Automation", "Microsoft Word", "Financial Data Management"]
     },
     {
       "category": "Documentation",
-      "items": [
-        "Student Visa File Processing",
-        "SOP Preparation Support",
-        "School Application Documentation",
-        "End-to-End File Management"
-      ]
+      "items": ["Student Visa File Processing", "SOP Preparation Support", "School Application Documentation", "End-to-End File Management"]
     }
   ],
   "experience": [
@@ -220,26 +144,8 @@
     }
   ],
   "projects": [
-    {
-      "folder": "Graphic Design",
-      "thumbnail": "assets/work/1789242003799-imgi_114_8fef02251201511.6a313186b7c40.jpg",
-      "items": [
-        {
-          "title": "A Grade Interview",
-          "image": "assets/work/1789242025742-imgi_114_8fef02251201511.6a313186b7c40.jpg",
-          "link": ""
-        }
-      ]
-    },
-    {
-      "folder": "Motion Video Editing",
-      "thumbnail": "",
-      "items": []
-    },
-    {
-      "folder": "Visa Documentation Samples",
-      "thumbnail": "",
-      "items": []
-    }
+    { "folder": "Graphic Design", "thumbnail": "", "items": [] },
+    { "folder": "Motion Video Editing", "thumbnail": "", "items": [] },
+    { "folder": "Visa Documentation Samples", "thumbnail": "", "items": [] }
   ]
 }
