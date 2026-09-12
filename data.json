@@ -222,8 +222,14 @@
   "projects": [
     {
       "folder": "Graphic Design",
-      "thumbnail": "",
-      "items": []
+      "thumbnail": "assets/work/1789242003799-imgi_114_8fef02251201511.6a313186b7c40.jpg",
+      "items": [
+        {
+          "title": "A Grade Interview",
+          "image": "assets/work/1789242025742-imgi_114_8fef02251201511.6a313186b7c40.jpg",
+          "link": ""
+        }
+      ]
     },
     {
       "folder": "Motion Video Editing",
