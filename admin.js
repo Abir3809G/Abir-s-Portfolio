@@ -40,6 +40,58 @@
     };
   }
 
+  // ---------- direct image/file upload straight into the GitHub repo ----------
+  // Reads the chosen file, base64-encodes it, and PUTs it to assets/... via the
+  // same Contents API used for data.json — no need to go to GitHub yourself.
+  function uploadFileToGitHub(file, destFolder){
+    return new Promise(function(resolve, reject){
+      if (!file){ reject(new Error('No file selected')); return; }
+      if (file.size > 8 * 1024 * 1024){ reject(new Error('File too large (max ~8MB) — please compress it first.')); return; }
+      var reader = new FileReader();
+      reader.onerror = function(){ reject(new Error('Could not read the file')); };
+      reader.onload = function(){
+        var base64 = String(reader.result).split(',')[1] || '';
+        var safeName = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9_.-]+/g, '-');
+        var path = destFolder.replace(/\/+$/, '') + '/' + safeName;
+        var apiUrl = 'https://api.github.com/repos/' + state.cfg.owner + '/' + state.cfg.repo + '/contents/' + path;
+        fetch(apiUrl + '?ref=' + encodeURIComponent(state.cfg.branch), { headers: ghHeaders() })
+          .then(function(r){ return r.ok ? r.json() : null; })
+          .catch(function(){ return null; })
+          .then(function(existing){
+            var body = { message: 'Upload via admin panel: ' + safeName, content: base64, branch: state.cfg.branch };
+            if (existing && existing.sha) body.sha = existing.sha;
+            return fetch(apiUrl, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()), body: JSON.stringify(body) });
+          })
+          .then(function(r){
+            if (!r.ok) return r.json().then(function(j){ throw new Error(j.message || ('GitHub responded ' + r.status)); });
+            return r.json();
+          })
+          .then(function(){ resolve(path); })
+          .catch(reject);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  // Wires a <input type="file"> so picking a file uploads it immediately and
+  // hands the resulting assets/ path to onDone (which fills the matching text
+  // field / data value). The text field still needs "Save to GitHub" pressed
+  // afterwards so data.json itself gets updated with the new path.
+  function wireUpload(fileInputEl, destFolder, onDone, statusEl){
+    if (!fileInputEl) return;
+    fileInputEl.addEventListener('change', function(){
+      var file = fileInputEl.files && fileInputEl.files[0];
+      if (!file) return;
+      if (statusEl){ statusEl.textContent = 'Uploading…'; statusEl.className = 'upload-status'; }
+      uploadFileToGitHub(file, destFolder).then(function(path){
+        onDone(path);
+        if (statusEl){ statusEl.textContent = 'Uploaded ✓ — now press "Save to GitHub" below to use it.'; statusEl.className = 'upload-status ok'; }
+        fileInputEl.value = '';
+      }).catch(function(err){
+        if (statusEl){ statusEl.textContent = 'Upload failed: ' + err.message; statusEl.className = 'upload-status err'; }
+      });
+    });
+  }
+
   // ---------- config persistence ----------
   function loadCfg(){
     try {
@@ -177,6 +229,19 @@
     bindText('pLanguages', function(){ return d.profile.languages; }, function(v){ d.profile.languages = v; });
     bindText('pInterests', function(){ return d.profile.interests; }, function(v){ d.profile.interests = v; });
 
+    wireUpload(document.getElementById('pPhotoFile'), 'assets/uploads', function(path){
+      d.profile.photo = path;
+      document.getElementById('pPhoto').value = path;
+    }, document.getElementById('pPhotoFileStatus'));
+    wireUpload(document.getElementById('pAboutPhotoFile'), 'assets/uploads', function(path){
+      d.profile.aboutPhoto = path;
+      document.getElementById('pAboutPhoto').value = path;
+    }, document.getElementById('pAboutPhotoFileStatus'));
+    wireUpload(document.getElementById('pCvFile'), 'assets', function(path){
+      d.profile.cv = path;
+      document.getElementById('pCv').value = path;
+    }, document.getElementById('pCvFileStatus'));
+
     renderVentures();
     renderSocials();
     renderSkills();
@@ -249,14 +314,18 @@
       var card = rowCard(
         '<div class="row-card-head"><b>Folder ' + (fi+1) + '</b><button class="btn btn-sm btn-danger js-remove-folder">Remove folder</button></div>' +
         '<div class="field"><label>Folder name</label><input class="js-folder-name" value="' + attr(folder.folder) + '"></div>' +
-        '<div class="field"><label>Thumbnail image (shown as the cover photo on this folder\'s card — upload to assets/work/ in GitHub first)</label><input class="js-thumb" value="' + attr(folder.thumbnail) + '" placeholder="assets/work/graphic-design-cover.jpg"></div>' +
+        '<div class="field"><label>Thumbnail image (shown as the cover photo on this folder\'s card)</label>' +
+          '<input class="js-thumb" value="' + attr(folder.thumbnail) + '" placeholder="assets/work/graphic-design-cover.jpg">' +
+          '<input type="file" accept="image/*" class="upload-input js-thumb-file"><span class="upload-status js-thumb-status"></span></div>' +
         '<div class="js-items"></div>' +
         '<button type="button" class="btn btn-sm js-add-item">+ Add piece to this folder</button>',
         function(){ state.data.projects.splice(fi,1); renderFolders(); }
       );
       card.querySelector('.js-remove-folder').addEventListener('click', function(){ state.data.projects.splice(fi,1); renderFolders(); });
       card.querySelector('.js-folder-name').addEventListener('input', function(e){ folder.folder = e.target.value; });
-      card.querySelector('.js-thumb').addEventListener('input', function(e){ folder.thumbnail = e.target.value; });
+      var thumbInput = card.querySelector('.js-thumb');
+      thumbInput.addEventListener('input', function(e){ folder.thumbnail = e.target.value; });
+      wireUpload(card.querySelector('.js-thumb-file'), 'assets/work', function(path){ folder.thumbnail = path; thumbInput.value = path; }, card.querySelector('.js-thumb-status'));
 
       var itemsWrap = card.querySelector('.js-items');
       function renderItems(){
@@ -270,12 +339,16 @@
             '<div class="grid-2">' +
               '<div class="field"><label>Title / caption</label><input class="js-title" value="' + attr(item.title) + '"></div>' +
               '<div class="field"><label>Link (optional)</label><input class="js-link" value="' + attr(item.link) + '"></div>' +
-              '<div class="field" style="grid-column:1/-1"><label>Image path (upload to assets/work/ in GitHub first)</label><input class="js-image" value="' + attr(item.image) + '" placeholder="assets/work/example.jpg"></div>' +
+              '<div class="field" style="grid-column:1/-1"><label>Image</label>' +
+                '<input class="js-image" value="' + attr(item.image) + '" placeholder="assets/work/example.jpg">' +
+                '<input type="file" accept="image/*" class="upload-input js-image-file"><span class="upload-status js-image-status"></span></div>' +
             '</div>';
           itemCard.querySelector('.js-remove-item').addEventListener('click', function(){ folder.items.splice(ii,1); renderItems(); renderTabCountHint(); });
           itemCard.querySelector('.js-title').addEventListener('input', function(e){ item.title = e.target.value; });
           itemCard.querySelector('.js-link').addEventListener('input', function(e){ item.link = e.target.value; });
-          itemCard.querySelector('.js-image').addEventListener('input', function(e){ item.image = e.target.value; });
+          var itemImageInput = itemCard.querySelector('.js-image');
+          itemImageInput.addEventListener('input', function(e){ item.image = e.target.value; });
+          wireUpload(itemCard.querySelector('.js-image-file'), 'assets/work', function(path){ item.image = path; itemImageInput.value = path; }, itemCard.querySelector('.js-image-status'));
           itemsWrap.appendChild(itemCard);
         });
       }
@@ -298,13 +371,17 @@
     var wrap = document.getElementById('venturesList');
     wrap.innerHTML = '';
     state.data.ventures.forEach(function(v, i){
+      v.image = v.image || '';
       var card = rowCard(
         '<div class="row-card-head"><b>Venture ' + (i+1) + '</b><button class="btn btn-sm btn-danger js-remove">Remove</button></div>' +
         '<div class="grid-2">' +
           '<div class="field"><label>Name</label><input class="js-name" value="' + attr(v.name) + '"></div>' +
-          '<div class="field"><label>Icon (emoji)</label><input class="js-icon" value="' + attr(v.icon) + '"></div>' +
+          '<div class="field"><label>Icon (emoji — used only if no logo image is set below)</label><input class="js-icon" value="' + attr(v.icon) + '"></div>' +
           '<div class="field" style="grid-column:1/-1"><label>Description</label><input class="js-desc" value="' + attr(v.description) + '"></div>' +
           '<div class="field" style="grid-column:1/-1"><label>URL (Facebook / Instagram link)</label><input class="js-url" value="' + attr(v.url) + '" placeholder="https://facebook.com/..."></div>' +
+          '<div class="field" style="grid-column:1/-1"><label>Logo / image (optional — replaces the emoji icon above)</label>' +
+            '<input class="js-image" value="' + attr(v.image) + '" placeholder="assets/uploads/khalifa-logo.png">' +
+            '<input type="file" accept="image/*" class="upload-input js-image-file"><span class="upload-status js-image-status"></span></div>' +
         '</div>',
         function(){ state.data.ventures.splice(i,1); renderVentures(); }
       );
@@ -312,11 +389,14 @@
       card.querySelector('.js-icon').addEventListener('input', function(e){ v.icon = e.target.value; });
       card.querySelector('.js-desc').addEventListener('input', function(e){ v.description = e.target.value; });
       card.querySelector('.js-url').addEventListener('input', function(e){ v.url = e.target.value; });
+      var imageInput = card.querySelector('.js-image');
+      imageInput.addEventListener('input', function(e){ v.image = e.target.value; });
+      wireUpload(card.querySelector('.js-image-file'), 'assets/uploads', function(path){ v.image = path; imageInput.value = path; }, card.querySelector('.js-image-status'));
       wrap.appendChild(card);
     });
   }
   document.getElementById('btnAddVenture').addEventListener('click', function(){
-    state.data.ventures.push({ name: 'New venture', description: '', url: '', icon: '✦' });
+    state.data.ventures.push({ name: 'New venture', description: '', url: '', icon: '✦', image: '' });
     renderVentures();
   });
 

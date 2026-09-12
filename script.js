@@ -237,7 +237,9 @@
     // Ventures
     var ventureGrid = document.getElementById('ventureGrid');
     (data.ventures || []).forEach(function(v, i){
-      var inner = '<div><h3>' + (v.icon ? esc(v.icon) + ' ' : '') + esc(v.name) + '</h3><p>' + esc(v.description || '') + '</p></div>' +
+      var logo = v.image ? '<img class="venture-logo" src="' + esc(v.image) + '" alt="' + esc(v.name) + '">' : '';
+      var titleIcon = (!v.image && v.icon) ? esc(v.icon) + ' ' : '';
+      var inner = '<div>' + logo + '<h3>' + titleIcon + esc(v.name) + '</h3><p>' + esc(v.description || '') + '</p></div>' +
         '<span class="arrow">↗</span>';
       var card;
       if (v.url){

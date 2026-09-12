@@ -124,19 +124,22 @@
       "name": "Khalifa",
       "description": "Islamic gadgets and products business page",
       "url": "",
-      "icon": "🕌"
+      "icon": "🕌",
+      "image": ""
     },
     {
       "name": "1% Solution",
       "description": "Ladies cosmetics and gadgets business page",
       "url": "",
-      "icon": "💄"
+      "icon": "💄",
+      "image": ""
     },
     {
       "name": "Sa'ādah",
       "description": "Islamic content, women's products, clothing & cosmetics",
       "url": "",
-      "icon": "🌙"
+      "icon": "🌙",
+      "image": ""
     }
   ],
   "projects": [
