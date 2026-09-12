@@ -76,6 +76,7 @@
   <section id="contact" class="contact-strip">
     <div class="container contact-row" id="contactRow">
       <div class="quote pop-in" id="contactQuote"></div>
+      <a href="#contactForm" class="contact-form-link" id="contactFormLink" style="display:none;">Send Me a Message ↓</a>
     </div>
   </section>
 
@@ -127,6 +128,22 @@
       </div>
     </div>
   </section>
+
+  <section id="contactForm" class="section" style="display:none;">
+    <div class="container" style="max-width:640px;">
+      <div class="eyebrow pop-in">Get In Touch</div>
+      <h2 class="pop-in">Send Me a Message</h2>
+      <form class="pop-in" id="cform" style="animation-delay:.08s;margin-top:24px;">
+        <div class="grid-2">
+          <div class="field"><label>Your Name</label><input type="text" name="name" id="cfName" required></div>
+          <div class="field"><label>Your Email</label><input type="email" name="email" id="cfEmail" required></div>
+        </div>
+        <div class="field"><label>Message</label><textarea name="message" id="cfMessage" rows="5" required></textarea></div>
+        <button type="submit" class="primary" id="cfSubmit" style="border:none;cursor:pointer;">Send Message ↗</button>
+        <div class="form-status" id="cfStatus"></div>
+      </form>
+    </div>
+  </section>
 </main>
 
 <div class="lightbox" id="lightbox">
@@ -157,14 +174,23 @@
       </div>
     </div>
     <div class="bottom">
-      <span>© <span id="year"></span> <span id="footerName">Md Aiyub Bhuyan Abir</span>. All rights reserved.</span>
-      <span>Design · Creativity · Growth</span>
+      <span class="bottom-left">
+        <span>© <span id="year"></span> <span id="footerName">Md Aiyub Bhuyan Abir</span>. All rights reserved.</span>
+        <span class="authorship">This website was designed &amp; built by me — original work, all copyright reserved.</span>
+      </span>
+      <span class="bottom-right">
+        <span>Design · Creativity · Growth</span>
+        <span class="counter-pill" id="visitorCounter" style="display:none;"><i class="fa-solid fa-eye"></i> <span id="visitorCountNum">0</span> visits</span>
+      </span>
     </div>
   </div>
 </footer>
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script src="script.js" defer></script>
 </body>
 </html>

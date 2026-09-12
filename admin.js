@@ -228,6 +228,7 @@
     bindText('pQuote', function(){ return d.profile.quote; }, function(v){ d.profile.quote = v; });
     bindText('pLanguages', function(){ return d.profile.languages; }, function(v){ d.profile.languages = v; });
     bindText('pInterests', function(){ return d.profile.interests; }, function(v){ d.profile.interests = v; });
+    bindText('pFormspreeId', function(){ return d.profile.formspreeId; }, function(v){ d.profile.formspreeId = v.trim(); });
 
     wireUpload(document.getElementById('pPhotoFile'), 'assets/uploads', function(path){
       d.profile.photo = path;

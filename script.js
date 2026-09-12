@@ -46,6 +46,174 @@
   }
 
   // ============================================================
+  // Scroll & motion enhancements (GSAP + ScrollTrigger + Lenis, loaded via
+  // CDN in index.html). Every function below checks the library actually
+  // loaded before doing anything — if a CDN is blocked or slow, the site
+  // simply keeps its existing, guaranteed-visible CSS animations instead
+  // of ever breaking or hiding content. Nothing here is required for the
+  // site to work correctly.
+  // ============================================================
+  var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var HAS_GSAP = !!(window.gsap && window.ScrollTrigger);
+  if (HAS_GSAP){
+    try { gsap.registerPlugin(ScrollTrigger); } catch(e){ HAS_GSAP = false; }
+  }
+
+  // ---- Buttery smooth scrolling (Lenis) + smooth in-page anchor jumps ----
+  function initSmoothScroll(){
+    if (typeof Lenis === 'undefined' || REDUCED_MOTION) return;
+    try {
+      var lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+      if (HAS_GSAP){
+        gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+        lenis.on('scroll', ScrollTrigger.update);
+      } else {
+        requestAnimationFrame(function raf(time){ lenis.raf(time); requestAnimationFrame(raf); });
+      }
+      document.querySelectorAll('a[href^="#"]').forEach(function(a){
+        a.addEventListener('click', function(e){
+          var id = a.getAttribute('href');
+          if (!id || id.length < 2) return;
+          var target;
+          try { target = document.querySelector(id); } catch(err){ return; }
+          if (!target) return;
+          e.preventDefault();
+          lenis.scrollTo(target, { offset: -70 });
+        });
+      });
+    } catch(e){ /* smooth scroll is a pure enhancement — never let it block the page */ }
+  }
+
+  // ---- Cinematic scroll-triggered reveal (upgrades the always-on-load
+  //      .pop-in cascade into a true scroll-in cascade, grouped by parent
+  //      so sibling items — skill cards, timeline items, etc. — stagger
+  //      together). Falls back to the plain .pop-in CSS animation whenever
+  //      GSAP/ScrollTrigger aren't available. ----
+  function initScrollReveal(){
+    if (!HAS_GSAP || REDUCED_MOTION) return;
+    try {
+      var els = Array.prototype.slice.call(document.querySelectorAll('.pop-in:not(.work-card)'));
+      if (!els.length) return;
+      var groups = [];
+      els.forEach(function(el){
+        var parent = el.parentElement;
+        var g = null;
+        for (var i = 0; i < groups.length; i++){ if (groups[i].parent === parent){ g = groups[i]; break; } }
+        if (!g){ g = { parent: parent, items: [] }; groups.push(g); }
+        g.items.push(el);
+      });
+      groups.forEach(function(g){
+        g.items.forEach(function(el){ el.classList.add('gsap-take-over'); });
+        gsap.from(g.items, {
+          opacity: 0, y: 26, duration: 0.75, ease: 'power2.out',
+          stagger: g.items.length > 1 ? 0.08 : 0,
+          scrollTrigger: { trigger: g.parent, start: 'top 88%', toggleActions: 'play none none none' }
+        });
+      });
+    } catch(e){
+      // If anything above goes wrong partway through, never leave content stuck
+      // invisible — drop back to the safe, always-visible state immediately.
+      document.querySelectorAll('.gsap-take-over').forEach(function(el){ el.classList.remove('gsap-take-over'); });
+    }
+  }
+
+  // ---- Count-up animation for the Achievements numbers ----
+  function initCountUp(){
+    if (REDUCED_MOTION) return;
+    var els = document.querySelectorAll('#achievementsGrid .stat strong');
+    if (!els.length) return;
+    els.forEach(function(el){
+      var raw = el.textContent || '';
+      var match = raw.match(/[\d.]+/);
+      if (!match) return;
+      var target = parseFloat(match[0]);
+      if (isNaN(target)) return;
+      var prefix = raw.slice(0, match.index);
+      var suffix = raw.slice(match.index + match[0].length);
+      var isInt = match[0].indexOf('.') === -1;
+      var animated = false;
+      function animate(){
+        if (animated) return;
+        animated = true;
+        var start = null, DURATION = 1200;
+        function step(ts){
+          if (!start) start = ts;
+          var progress = Math.min((ts - start) / DURATION, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var current = target * eased;
+          el.textContent = prefix + (isInt ? Math.round(current) : current.toFixed(1)) + suffix;
+          if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      if ('IntersectionObserver' in window){
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){ if (entry.isIntersecting){ animate(); io.disconnect(); } });
+        }, { threshold: 0.4 });
+        io.observe(el);
+      } else {
+        animate();
+      }
+    });
+  }
+
+  // ---- Magnetic hover on primary buttons/links (mouse-driven nudge) ----
+  function initMagnetic(){
+    if (REDUCED_MOTION) return;
+    if (window.matchMedia && window.matchMedia('(hover: none)').matches) return;
+    var targets = document.querySelectorAll('.primary, .secondary, .contact-form-link, #cfSubmit');
+    targets.forEach(function(el){
+      if (el._magneticWired) return;
+      el._magneticWired = true;
+      var xTo, yTo;
+      if (HAS_GSAP){
+        xTo = gsap.quickTo(el, 'x', { duration: 0.4, ease: 'power3' });
+        yTo = gsap.quickTo(el, 'y', { duration: 0.4, ease: 'power3' });
+      }
+      el.addEventListener('mousemove', function(e){
+        var r = el.getBoundingClientRect();
+        var dx = (e.clientX - r.left - r.width / 2) * 0.35;
+        var dy = (e.clientY - r.top - r.height / 2) * 0.35;
+        if (HAS_GSAP){ xTo(dx); yTo(dy); }
+        else { el.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'; }
+      });
+      el.addEventListener('mouseleave', function(){
+        if (HAS_GSAP){ xTo(0); yTo(0); }
+        else { el.style.transform = ''; }
+      });
+    });
+  }
+
+  // ---- Subtle scroll parallax on the hero and about photos ----
+  function initParallax(){
+    if (!HAS_GSAP || REDUCED_MOTION) return;
+    try {
+      var heroImg = document.getElementById('heroPhoto');
+      if (heroImg){
+        gsap.fromTo(heroImg, { y: -18 }, {
+          y: 18, ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.6 }
+        });
+      }
+      var aboutBox = document.querySelector('.about-photo');
+      var aboutImg = aboutBox && aboutBox.querySelector('img');
+      if (aboutBox && aboutImg){
+        var buffer = Math.max(0, aboutImg.getBoundingClientRect().height - aboutBox.getBoundingClientRect().height - 8);
+        if (buffer > 4){
+          gsap.fromTo(aboutImg, { y: 0 }, {
+            y: -buffer, ease: 'none',
+            scrollTrigger: { trigger: aboutBox, start: 'top bottom', end: 'bottom top', scrub: 0.6 }
+          });
+        }
+      }
+    } catch(e){}
+  }
+
+  initSmoothScroll();
+  initMagnetic();
+
+  // ============================================================
   // Social link helpers — real brand icons (Font Awesome, loaded in index.html)
   // ============================================================
   var ICON_CLASS = {
@@ -65,6 +233,9 @@
     .then(function(r){ return r.json(); })
     .then(render)
     .catch(function(err){ console.error('Could not load data.json', err); });
+
+  // Visitor counter doesn't depend on profile data — start it independently.
+  initVisitorCounter();
 
   function esc(s){
     if(s == null) return '';
@@ -262,7 +433,72 @@
     setText('footerBrandTitle', p.title || '');
     if (p.interests) setText('footerAbout', p.interests);
 
+    initContactForm(p.formspreeId);
     wireMailtoFallback();
+
+    // Run after all of the above has been added to the DOM, so the
+    // scroll-reveal/parallax/count-up enhancements see the real content.
+    initScrollReveal();
+    initCountUp();
+    initParallax();
+    initMagnetic();
+  }
+
+  // ---- Visitor counter (free api.counterapi.dev, no signup needed) ----
+  function initVisitorCounter(){
+    var pill = document.getElementById('visitorCounter');
+    var numEl = document.getElementById('visitorCountNum');
+    if (!pill || !numEl) return;
+    fetch('https://api.counterapi.dev/v1/abir-portfolio-site/visits/up')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(json){
+        var count = json && (json.count != null ? json.count : (json.data && json.data.up_count));
+        if (count == null) return;
+        numEl.textContent = count;
+        pill.style.display = '';
+      })
+      .catch(function(){ /* stay hidden on any failure — never show a broken counter */ });
+  }
+
+  // ---- Contact form (Formspree) — stays hidden until a form ID is set in admin ----
+  function initContactForm(formspreeId){
+    var section = document.getElementById('contactForm');
+    var link = document.getElementById('contactFormLink');
+    if (!section) return;
+    if (!formspreeId){
+      section.style.display = 'none';
+      if (link) link.style.display = 'none';
+      return;
+    }
+    section.style.display = '';
+    if (link) link.style.display = '';
+    var form = document.getElementById('cform');
+    var status = document.getElementById('cfStatus');
+    var submitBtn = document.getElementById('cfSubmit');
+    if (!form || form.dataset.wired) return;
+    form.dataset.wired = '1';
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if (status){ status.textContent = 'Sending…'; status.className = 'form-status'; }
+      if (submitBtn) submitBtn.disabled = true;
+      var data = new FormData(form);
+      fetch('https://formspree.io/f/' + formspreeId, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      }).then(function(r){
+        if (r.ok){
+          if (status){ status.textContent = 'Thank you! Your message has been sent — I\'ll get back to you soon.'; status.className = 'form-status ok'; }
+          form.reset();
+        } else {
+          return r.json().then(function(j){ throw new Error((j.errors && j.errors[0] && j.errors[0].message) || 'Something went wrong'); });
+        }
+      }).catch(function(){
+        if (status){ status.textContent = 'Could not send your message right now — please email me directly instead.'; status.className = 'form-status err'; }
+      }).finally(function(){
+        if (submitBtn) submitBtn.disabled = false;
+      });
+    });
   }
 
   // ---- Rotating role/profession typing animation (hero title) ----
