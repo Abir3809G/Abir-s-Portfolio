@@ -125,6 +125,20 @@
   function saveData(){
     el.btnSave.disabled = true;
     el.btnSave.innerHTML = '<span class="spinner"></span>Saving…';
+    attemptSave(false);
+  }
+
+  function finishSaveUI(){
+    el.btnSave.disabled = false;
+    el.btnSave.textContent = 'Save to GitHub';
+  }
+
+  // Saves data.json. If the file changed on GitHub since this page loaded
+  // (most commonly: files were also uploaded/replaced by hand on github.com
+  // in the same session), GitHub rejects the save with a sha mismatch —
+  // instead of just failing, fetch the current sha and retry automatically
+  // once, so a stale admin tab doesn't need a manual reload to save again.
+  function attemptSave(isRetry){
     var body = {
       message: 'Update portfolio content via admin panel',
       content: b64EncodeUnicode(JSON.stringify(state.data, null, 2)),
@@ -133,19 +147,37 @@
     };
     fetch(apiBase(), { method: 'PUT', headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()), body: JSON.stringify(body) })
       .then(function(r){
-        if (!r.ok) return r.json().then(function(j){ throw new Error(j.message || ('GitHub responded ' + r.status)); });
+        if (!r.ok) return r.json().then(function(j){ var err = new Error(j.message || ('GitHub responded ' + r.status)); err.status = r.status; throw err; });
         return r.json();
       })
       .then(function(json){
         state.sha = json.content.sha;
         showStatus(el.saveStatus, 'Saved! Your live site will update in about a minute.', true);
+        finishSaveUI();
       })
       .catch(function(err){
-        showStatus(el.saveStatus, 'Save failed: ' + err.message, false);
-      })
-      .finally(function(){
-        el.btnSave.disabled = false;
-        el.btnSave.textContent = 'Save to GitHub';
+        var looksLikeShaConflict = err.status === 409 || /sha/i.test(err.message || '');
+        if (looksLikeShaConflict && !isRetry){
+          showStatus(el.saveStatus, 'This file changed on GitHub since the page loaded — refreshing and retrying automatically…', true);
+          fetch(apiBase() + '?ref=' + encodeURIComponent(state.cfg.branch), { headers: ghHeaders() })
+            .then(function(r){ return r.ok ? r.json() : null; })
+            .then(function(fresh){
+              if (fresh && fresh.sha){
+                state.sha = fresh.sha;
+                attemptSave(true);
+              } else {
+                showStatus(el.saveStatus, 'Save failed: ' + err.message + ' — please reload the admin page and try again.', false);
+                finishSaveUI();
+              }
+            })
+            .catch(function(){
+              showStatus(el.saveStatus, 'Save failed: ' + err.message + ' — please reload the admin page and try again.', false);
+              finishSaveUI();
+            });
+        } else {
+          showStatus(el.saveStatus, 'Save failed: ' + err.message + (looksLikeShaConflict ? ' — please reload the admin page and try again.' : ''), false);
+          finishSaveUI();
+        }
       });
   }
 
