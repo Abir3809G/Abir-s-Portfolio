@@ -293,8 +293,8 @@ footer h4{ font-size:.68rem; text-transform:uppercase; letter-spacing:1.5px; mar
 .bottom-left{ display:flex; flex-direction:column; gap:4px; }
 .bottom-right{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
 .authorship{ opacity:.75; }
-.counter-pill{ display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); border-radius:999px; padding:6px 14px; font-size:.68rem; color:#cfd6d0; }
-.counter-pill i{ font-size:11px; }
+.counter-pill{ display:inline-flex; align-items:center; }
+.counter-pill img{ display:block; height:16px; border-radius:4px; }
 .contact-form-link{ display:inline-flex; align-items:center; gap:6px; margin-top:14px; color:#fff; border:1px solid rgba(255,255,255,.35); border-radius:999px; padding:9px 18px; font-size:.76rem; font-weight:700; transition: all .2s; }
 .contact-form-link:hover{ background:#fff; color:#273b2d; border-color:#fff; }
 @media (max-width:900px){ .footer-top{ grid-template-columns:1fr 1fr; gap:28px; } }

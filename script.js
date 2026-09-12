@@ -46,8 +46,9 @@
   }
 
   // ============================================================
-  // Scroll & motion enhancements (GSAP + ScrollTrigger + Lenis, loaded via
-  // CDN in index.html). Every function below checks the library actually
+  // Scroll & motion enhancements (GSAP + ScrollTrigger, loaded via CDN in
+  // index.html — normal native browser scrolling, no smooth-scroll library).
+  // Every function below checks the library actually
   // loaded before doing anything — if a CDN is blocked or slow, the site
   // simply keeps its existing, guaranteed-visible CSS animations instead
   // of ever breaking or hiding content. Nothing here is required for the
@@ -57,32 +58,6 @@
   var HAS_GSAP = !!(window.gsap && window.ScrollTrigger);
   if (HAS_GSAP){
     try { gsap.registerPlugin(ScrollTrigger); } catch(e){ HAS_GSAP = false; }
-  }
-
-  // ---- Buttery smooth scrolling (Lenis) + smooth in-page anchor jumps ----
-  function initSmoothScroll(){
-    if (typeof Lenis === 'undefined' || REDUCED_MOTION) return;
-    try {
-      var lenis = new Lenis({ duration: 1.1, smoothWheel: true });
-      if (HAS_GSAP){
-        gsap.ticker.add(function(time){ lenis.raf(time * 1000); });
-        gsap.ticker.lagSmoothing(0);
-        lenis.on('scroll', ScrollTrigger.update);
-      } else {
-        requestAnimationFrame(function raf(time){ lenis.raf(time); requestAnimationFrame(raf); });
-      }
-      document.querySelectorAll('a[href^="#"]').forEach(function(a){
-        a.addEventListener('click', function(e){
-          var id = a.getAttribute('href');
-          if (!id || id.length < 2) return;
-          var target;
-          try { target = document.querySelector(id); } catch(err){ return; }
-          if (!target) return;
-          e.preventDefault();
-          lenis.scrollTo(target, { offset: -70 });
-        });
-      });
-    } catch(e){ /* smooth scroll is a pure enhancement — never let it block the page */ }
   }
 
   // ---- Cinematic scroll-triggered reveal (upgrades the always-on-load
@@ -210,7 +185,6 @@
     } catch(e){}
   }
 
-  initSmoothScroll();
   initMagnetic();
 
   // ============================================================
@@ -444,20 +418,16 @@
     initMagnetic();
   }
 
-  // ---- Visitor counter (free api.counterapi.dev, no signup needed) ----
+  // ---- Visitor counter (free visitorbadge.io badge image, no signup needed) ----
   function initVisitorCounter(){
     var pill = document.getElementById('visitorCounter');
-    var numEl = document.getElementById('visitorCountNum');
-    if (!pill || !numEl) return;
-    fetch('https://api.counterapi.dev/v1/abir-portfolio-site/visits/up')
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(json){
-        var count = json && (json.count != null ? json.count : (json.data && json.data.up_count));
-        if (count == null) return;
-        numEl.textContent = count;
-        pill.style.display = '';
-      })
-      .catch(function(){ /* stay hidden on any failure — never show a broken counter */ });
+    var img = document.getElementById('visitorBadgeImg');
+    if (!pill || !img) return;
+    var pageUrl = location.origin + location.pathname;
+    img.onload = function(){ pill.style.display = ''; };
+    img.onerror = function(){ pill.style.display = 'none'; };
+    img.src = 'https://api.visitorbadge.io/api/combined?path=' + encodeURIComponent(pageUrl) +
+      '&label=Visits&labelColor=%23273b2d&countColor=%23f2b90c&style=flat-square';
   }
 
   // ---- Contact form (Formspree) — stays hidden until a form ID is set in admin ----
