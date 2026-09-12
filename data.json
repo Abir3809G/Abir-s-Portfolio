@@ -14,7 +14,7 @@
     "photo": "assets/profile.jpg",
     "aboutPhoto": "",
     "cv": "assets/Md_Aiyub_Bhuyan_Abir_CV.pdf",
-    "formspreeId": "",
+    "formspreeId": "maeyzrby",
     "email": "abir16032002@gmail.com",
     "phones": [
       "01643573300",
@@ -226,7 +226,7 @@
       "items": [
         {
           "title": "",
-          "image": "",
+          "image": "assets/work/1789245803246-Motion-Video-Editing.png",
           "link": ""
         }
       ]
