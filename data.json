@@ -229,7 +229,8 @@
           "image": "assets/work/1789245803246-Motion-Video-Editing.png",
           "link": ""
         }
-      ]
+      ],
+      "seeMoreUrl": ""
     },
     {
       "folder": "Motion Video Editing",
@@ -240,17 +241,20 @@
           "image": "",
           "link": ""
         }
-      ]
+      ],
+      "seeMoreUrl": ""
     },
     {
       "folder": "UI & UX",
       "thumbnail": "assets/work/1789396873710-Web-and-Ui-Ux-design.png",
-      "items": []
+      "items": [],
+      "seeMoreUrl": ""
     },
     {
       "folder": "Visa Documentation Samples",
       "items": [],
-      "thumbnail": "assets/work/1789396904528-Visa-Processing.png"
+      "thumbnail": "assets/work/1789396904528-Visa-Processing.png",
+      "seeMoreUrl": ""
     }
   ]
 }
