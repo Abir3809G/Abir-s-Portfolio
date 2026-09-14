@@ -266,6 +266,14 @@ h2{ font-size: clamp(1.7rem, 3.4vw, 2.5rem); letter-spacing:-.02em; line-height:
   color:#fff; background: linear-gradient(to top, rgba(0,0,0,.72), transparent); }
 .work-empty{ grid-column:1/-1; border:1.5px dashed var(--border); border-radius: var(--radius); padding:36px 20px; text-align:center; color: var(--text-faint); font-size:.86rem; }
 
+.work-see-more{ display:flex; align-items:center; justify-content:center; text-decoration:none;
+  background: var(--grad); }
+.work-see-more .see-more-inner{ color:#fff; font-family:'Manrope',sans-serif; font-weight:800; font-size:1rem;
+  display:flex; align-items:center; gap:8px; letter-spacing:.2px; }
+.work-see-more .see-more-arrow{ display:inline-block; transition: transform .25s var(--ease); }
+.work-see-more:hover .see-more-arrow{ transform: translate(3px,-3px); }
+.work-see-more:hover{ filter:brightness(1.08); }
+
 .lightbox{ position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center;
   background: rgba(var(--ink-rgb),.82); opacity:0; pointer-events:none; transition: opacity .3s; padding:32px; }
 .lightbox.open{ opacity:1; pointer-events:auto; }

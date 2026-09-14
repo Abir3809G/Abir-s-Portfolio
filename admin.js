@@ -16,8 +16,22 @@
     btnForget: document.getElementById('btnForget'),
     setupStatus: document.getElementById('setupStatus'),
     btnSave: document.getElementById('btnSave'),
-    saveStatus: document.getElementById('saveStatus')
+    saveStatus: document.getElementById('saveStatus'),
+    saveHint: document.getElementById('saveHint')
   };
+
+  // Uploading a file only pushes the file itself to GitHub — the change
+  // doesn't take effect on the site until "Save to GitHub" is pressed too.
+  // Make that impossible to miss: after any upload, visibly highlight the
+  // Save button until it's actually clicked.
+  function flagUnsavedUpload(){
+    if (el.btnSave) el.btnSave.classList.add('needs-save');
+    if (el.saveHint) el.saveHint.textContent = 'You just uploaded a file — press "Save to GitHub" below now, or it won\'t appear on your site.';
+  }
+  function clearUnsavedFlag(){
+    if (el.btnSave) el.btnSave.classList.remove('needs-save');
+    if (el.saveHint) el.saveHint.textContent = 'Unsaved changes are kept only in this tab until you save.';
+  }
 
   // ---------- utils ----------
   function showStatus(node, msg, ok){
@@ -86,10 +100,49 @@
         onDone(path);
         if (statusEl){ statusEl.textContent = 'Uploaded ✓ — now press "Save to GitHub" below to use it.'; statusEl.className = 'upload-status ok'; }
         fileInputEl.value = '';
+        flagUnsavedUpload();
       }).catch(function(err){
         if (statusEl){ statusEl.textContent = 'Upload failed: ' + err.message; statusEl.className = 'upload-status err'; }
       });
     });
+  }
+
+  // ---------- permanent delete from GitHub, with cross-reference safety ----------
+  // Every image/file path currently referenced anywhere in the (in-memory,
+  // not-yet-saved) data — so a file is never deleted from GitHub while it's
+  // still being used somewhere else (e.g. the same photo reused as both a
+  // folder thumbnail and a venture logo).
+  function allReferencedPaths(){
+    var paths = [];
+    function add(p){ if (p) paths.push(p); }
+    var d = state.data || {};
+    if (d.profile){ add(d.profile.photo); add(d.profile.aboutPhoto); add(d.profile.cv); }
+    (d.projects || []).forEach(function(f){
+      add(f.thumbnail);
+      (f.items || []).forEach(function(it){ add(it.image); });
+    });
+    (d.ventures || []).forEach(function(v){ add(v.image); });
+    return paths;
+  }
+  // Call this AFTER the in-memory reference to `path` has already been
+  // cleared/removed. If nothing else still points to it, deletes the file
+  // from GitHub for real. Best-effort: any failure here is silently ignored
+  // rather than interrupting the admin UI — it never touches data.json itself.
+  function maybeDeleteOrphanedFile(path){
+    if (!path || !/^assets\//.test(path)) return;
+    if (allReferencedPaths().indexOf(path) !== -1) return; // still used elsewhere — keep it
+    var apiUrl = 'https://api.github.com/repos/' + state.cfg.owner + '/' + state.cfg.repo + '/contents/' + path;
+    fetch(apiUrl + '?ref=' + encodeURIComponent(state.cfg.branch), { headers: ghHeaders() })
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(existing){
+        if (!existing || !existing.sha) return;
+        return fetch(apiUrl, {
+          method: 'DELETE',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, ghHeaders()),
+          body: JSON.stringify({ message: 'Remove unused file via admin panel', sha: existing.sha, branch: state.cfg.branch })
+        });
+      })
+      .catch(function(){ /* cleanup is best-effort only */ });
   }
 
   // ---------- config persistence ----------
@@ -153,6 +206,7 @@
       .then(function(json){
         state.sha = json.content.sha;
         showStatus(el.saveStatus, 'Saved! Your live site will update in about a minute.', true);
+        clearUnsavedFlag();
         finishSaveUI();
       })
       .catch(function(err){
@@ -263,16 +317,22 @@
     bindText('pFormspreeId', function(){ return d.profile.formspreeId; }, function(v){ d.profile.formspreeId = v.trim(); });
 
     wireUpload(document.getElementById('pPhotoFile'), 'assets/uploads', function(path){
+      var old = d.profile.photo;
       d.profile.photo = path;
       document.getElementById('pPhoto').value = path;
+      if (old && old !== path) maybeDeleteOrphanedFile(old);
     }, document.getElementById('pPhotoFileStatus'));
     wireUpload(document.getElementById('pAboutPhotoFile'), 'assets/uploads', function(path){
+      var old = d.profile.aboutPhoto;
       d.profile.aboutPhoto = path;
       document.getElementById('pAboutPhoto').value = path;
+      if (old && old !== path) maybeDeleteOrphanedFile(old);
     }, document.getElementById('pAboutPhotoFileStatus'));
     wireUpload(document.getElementById('pCvFile'), 'assets', function(path){
+      var old = d.profile.cv;
       d.profile.cv = path;
       document.getElementById('pCv').value = path;
+      if (old && old !== path) maybeDeleteOrphanedFile(old);
     }, document.getElementById('pCvFileStatus'));
 
     renderVentures();
@@ -344,21 +404,42 @@
     state.data.projects.forEach(function(folder, fi){
       folder.items = folder.items || [];
       folder.thumbnail = folder.thumbnail || '';
+      folder.seeMoreUrl = folder.seeMoreUrl || '';
       var card = rowCard(
         '<div class="row-card-head"><b>Folder ' + (fi+1) + '</b><button class="btn btn-sm btn-danger js-remove-folder">Remove folder</button></div>' +
         '<div class="field"><label>Folder name</label><input class="js-folder-name" value="' + attr(folder.folder) + '"></div>' +
         '<div class="field"><label>Thumbnail image (shown as the cover photo on this folder\'s card)</label>' +
           '<input class="js-thumb" value="' + attr(folder.thumbnail) + '" placeholder="assets/work/graphic-design-cover.jpg">' +
-          '<input type="file" accept="image/*" class="upload-input js-thumb-file"><span class="upload-status js-thumb-status"></span></div>' +
+          '<input type="file" accept="image/*" class="upload-input js-thumb-file"><span class="upload-status js-thumb-status"></span>' +
+          '<button type="button" class="btn btn-sm btn-danger js-thumb-clear" style="margin-top:6px;">🗑 Remove image</button></div>' +
+        '<div class="field"><label>"See More" link (optional — shown as a tile after this folder\'s pieces in the full gallery view)</label>' +
+          '<input class="js-see-more" value="' + attr(folder.seeMoreUrl) + '" placeholder="https://behance.net/... or any link with more of this work"></div>' +
         '<div class="js-items"></div>' +
         '<button type="button" class="btn btn-sm js-add-item">+ Add piece to this folder</button>',
         function(){ state.data.projects.splice(fi,1); renderFolders(); }
       );
-      card.querySelector('.js-remove-folder').addEventListener('click', function(){ state.data.projects.splice(fi,1); renderFolders(); });
+      card.querySelector('.js-remove-folder').addEventListener('click', function(){
+        var removed = folder;
+        state.data.projects.splice(fi,1); renderFolders();
+        maybeDeleteOrphanedFile(removed.thumbnail);
+        (removed.items || []).forEach(function(it){ maybeDeleteOrphanedFile(it.image); });
+        flagUnsavedUpload();
+      });
       card.querySelector('.js-folder-name').addEventListener('input', function(e){ folder.folder = e.target.value; });
+      card.querySelector('.js-see-more').addEventListener('input', function(e){ folder.seeMoreUrl = e.target.value; });
       var thumbInput = card.querySelector('.js-thumb');
       thumbInput.addEventListener('input', function(e){ folder.thumbnail = e.target.value; });
-      wireUpload(card.querySelector('.js-thumb-file'), 'assets/work', function(path){ folder.thumbnail = path; thumbInput.value = path; }, card.querySelector('.js-thumb-status'));
+      wireUpload(card.querySelector('.js-thumb-file'), 'assets/work', function(path){
+        var old = folder.thumbnail;
+        folder.thumbnail = path; thumbInput.value = path;
+        if (old && old !== path) maybeDeleteOrphanedFile(old);
+      }, card.querySelector('.js-thumb-status'));
+      card.querySelector('.js-thumb-clear').addEventListener('click', function(){
+        var old = folder.thumbnail;
+        folder.thumbnail = ''; thumbInput.value = '';
+        maybeDeleteOrphanedFile(old);
+        flagUnsavedUpload();
+      });
 
       var itemsWrap = card.querySelector('.js-items');
       function renderItems(){
@@ -374,14 +455,30 @@
               '<div class="field"><label>Link (optional)</label><input class="js-link" value="' + attr(item.link) + '"></div>' +
               '<div class="field" style="grid-column:1/-1"><label>Image</label>' +
                 '<input class="js-image" value="' + attr(item.image) + '" placeholder="assets/work/example.jpg">' +
-                '<input type="file" accept="image/*" class="upload-input js-image-file"><span class="upload-status js-image-status"></span></div>' +
+                '<input type="file" accept="image/*" class="upload-input js-image-file"><span class="upload-status js-image-status"></span>' +
+                '<button type="button" class="btn btn-sm btn-danger js-image-clear" style="margin-top:6px;">🗑 Remove image</button></div>' +
             '</div>';
-          itemCard.querySelector('.js-remove-item').addEventListener('click', function(){ folder.items.splice(ii,1); renderItems(); renderTabCountHint(); });
+          itemCard.querySelector('.js-remove-item').addEventListener('click', function(){
+            var removedImg = item.image;
+            folder.items.splice(ii,1); renderItems(); renderTabCountHint();
+            maybeDeleteOrphanedFile(removedImg);
+            flagUnsavedUpload();
+          });
           itemCard.querySelector('.js-title').addEventListener('input', function(e){ item.title = e.target.value; });
           itemCard.querySelector('.js-link').addEventListener('input', function(e){ item.link = e.target.value; });
           var itemImageInput = itemCard.querySelector('.js-image');
           itemImageInput.addEventListener('input', function(e){ item.image = e.target.value; });
-          wireUpload(itemCard.querySelector('.js-image-file'), 'assets/work', function(path){ item.image = path; itemImageInput.value = path; }, itemCard.querySelector('.js-image-status'));
+          wireUpload(itemCard.querySelector('.js-image-file'), 'assets/work', function(path){
+            var old = item.image;
+            item.image = path; itemImageInput.value = path;
+            if (old && old !== path) maybeDeleteOrphanedFile(old);
+          }, itemCard.querySelector('.js-image-status'));
+          itemCard.querySelector('.js-image-clear').addEventListener('click', function(){
+            var old = item.image;
+            item.image = ''; itemImageInput.value = '';
+            maybeDeleteOrphanedFile(old);
+            flagUnsavedUpload();
+          });
           itemsWrap.appendChild(itemCard);
         });
       }
@@ -414,9 +511,15 @@
           '<div class="field" style="grid-column:1/-1"><label>URL (Facebook / Instagram link)</label><input class="js-url" value="' + attr(v.url) + '" placeholder="https://facebook.com/..."></div>' +
           '<div class="field" style="grid-column:1/-1"><label>Logo / image (optional — replaces the emoji icon above)</label>' +
             '<input class="js-image" value="' + attr(v.image) + '" placeholder="assets/uploads/khalifa-logo.png">' +
-            '<input type="file" accept="image/*" class="upload-input js-image-file"><span class="upload-status js-image-status"></span></div>' +
+            '<input type="file" accept="image/*" class="upload-input js-image-file"><span class="upload-status js-image-status"></span>' +
+            '<button type="button" class="btn btn-sm btn-danger js-image-clear" style="margin-top:6px;">🗑 Remove image</button></div>' +
         '</div>',
-        function(){ state.data.ventures.splice(i,1); renderVentures(); }
+        function(){
+          var removedImg = v.image;
+          state.data.ventures.splice(i,1); renderVentures();
+          maybeDeleteOrphanedFile(removedImg);
+          flagUnsavedUpload();
+        }
       );
       card.querySelector('.js-name').addEventListener('input', function(e){ v.name = e.target.value; });
       card.querySelector('.js-icon').addEventListener('input', function(e){ v.icon = e.target.value; });
@@ -424,7 +527,17 @@
       card.querySelector('.js-url').addEventListener('input', function(e){ v.url = e.target.value; });
       var imageInput = card.querySelector('.js-image');
       imageInput.addEventListener('input', function(e){ v.image = e.target.value; });
-      wireUpload(card.querySelector('.js-image-file'), 'assets/uploads', function(path){ v.image = path; imageInput.value = path; }, card.querySelector('.js-image-status'));
+      wireUpload(card.querySelector('.js-image-file'), 'assets/uploads', function(path){
+        var old = v.image;
+        v.image = path; imageInput.value = path;
+        if (old && old !== path) maybeDeleteOrphanedFile(old);
+      }, card.querySelector('.js-image-status'));
+      card.querySelector('.js-image-clear').addEventListener('click', function(){
+        var old = v.image;
+        v.image = ''; imageInput.value = '';
+        maybeDeleteOrphanedFile(old);
+        flagUnsavedUpload();
+      });
       wrap.appendChild(card);
     });
   }

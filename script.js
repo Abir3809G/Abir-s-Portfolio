@@ -542,16 +542,6 @@
     // would otherwise render as a broken picture in the gallery.
     function realItems(f){ return (f.items || []).filter(function(it){ return it && it.image; }); }
 
-    // Flatten every folder's real items into one tagged list, so the "All"
-    // filter and per-folder filters can share one render function.
-    function allTaggedItems(){
-      var out = [];
-      folders.forEach(function(f){
-        realItems(f).forEach(function(it){ out.push({ item: it, folder: f.folder }); });
-      });
-      return out;
-    }
-
     function renderCards(){
       cardsWrap.innerHTML = '';
       folders.forEach(function(f){
@@ -585,8 +575,36 @@
 
     function renderOverlayGrid(){
       grid.innerHTML = '';
-      var tagged = currentFilter === ALL ? allTaggedItems() : allTaggedItems().filter(function(t){ return t.folder === currentFilter; });
-      if (!tagged.length){
+      var foldersToShow = currentFilter === ALL ? folders : folders.filter(function(f){ return f.folder === currentFilter; });
+      var i = 0, anyItem = false;
+      foldersToShow.forEach(function(f){
+        var items = realItems(f);
+        if (!items.length) return;
+        anyItem = true;
+        items.forEach(function(item){
+          var card = document.createElement('div');
+          card.className = 'work-card pop-in';
+          card.style.animationDelay = (Math.min(i++, 12) * 0.05) + 's';
+          card.innerHTML = '<img src="' + esc(item.image) + '" alt="' + esc(item.title || '') + '" loading="lazy">' +
+            (item.title ? '<figcaption>' + esc(item.title) + '</figcaption>' : '');
+          card.addEventListener('click', function(){ openLightbox(item.image, item.title || ''); });
+          grid.appendChild(card);
+        });
+        // A per-folder "See More" tile after that folder's real pieces —
+        // wherever it appears (a single filtered folder, or grouped within
+        // "All"), pointing to whatever link the admin panel has set for it.
+        if (f.seeMoreUrl){
+          var more = document.createElement('a');
+          more.className = 'work-card work-see-more pop-in';
+          more.style.animationDelay = (Math.min(i++, 12) * 0.05) + 's';
+          more.href = f.seeMoreUrl;
+          more.target = '_blank';
+          more.rel = 'noopener';
+          more.innerHTML = '<span class="see-more-inner">See More<span class="see-more-arrow">↗</span></span>';
+          grid.appendChild(more);
+        }
+      });
+      if (!anyItem){
         var fname = currentFilter === ALL ? 'Portfolio' : currentFilter;
         var style = FOLDER_STYLE[currentFilter] || { icon: '🗂️', grad: 'var(--grad)' };
         var empty = document.createElement('div');
@@ -596,18 +614,7 @@
         empty.innerHTML = '<div style="font-weight:800;font-size:1.1rem;margin-bottom:6px;">' + style.icon + ' ' + esc(fname) + '</div>' +
           '<div style="opacity:.85;">Real pieces coming soon — added via the admin panel.</div>';
         grid.appendChild(empty);
-        return;
       }
-      tagged.forEach(function(t, i){
-        var item = t.item;
-        var card = document.createElement('div');
-        card.className = 'work-card pop-in';
-        card.style.animationDelay = (Math.min(i, 12) * 0.05) + 's';
-        card.innerHTML = '<img src="' + esc(item.image) + '" alt="' + esc(item.title || '') + '" loading="lazy">' +
-          (item.title ? '<figcaption>' + esc(item.title) + '</figcaption>' : '');
-        card.addEventListener('click', function(){ openLightbox(item.image, item.title || ''); });
-        grid.appendChild(card);
-      });
     }
 
     function showOverlayForFilter(filterName, updateHash){
