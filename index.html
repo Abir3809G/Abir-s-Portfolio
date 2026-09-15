@@ -31,7 +31,11 @@
         <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>
         <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 14.6a8.5 8.5 0 1 1-9.1-12 7 7 0 0 0 9.1 12z"/></svg>
       </button>
-      <a href="#" id="navCvLink" download class="cv-btn">↓ Download CV</a>
+      <div class="cv-dropdown" id="cvDropdown" style="display:none;">
+        <a href="#" id="cvSingleLink" class="cv-btn" style="display:none;">↓ Download CV</a>
+        <button type="button" id="cvDropdownBtn" class="cv-btn" style="display:none;">↓ Download CV <span class="cv-caret">▾</span></button>
+        <div class="cv-dropdown-menu" id="cvDropdownMenu"></div>
+      </div>
       <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
     </div>
   </div>
@@ -195,6 +199,19 @@
     </div>
   </div>
 </footer>
+
+<div class="cv-password-modal" id="cvPasswordModal">
+  <div class="cv-password-box">
+    <h3>Password Protected</h3>
+    <p>Enter the password to download this CV.</p>
+    <input type="password" id="cvPasswordInput" autocomplete="off">
+    <div class="cv-password-error" id="cvPasswordError"></div>
+    <div class="cv-password-actions">
+      <button type="button" class="secondary" id="cvPasswordCancel">Cancel</button>
+      <button type="button" class="primary" id="cvPasswordSubmit" style="border:none;cursor:pointer;">Download ↓</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 

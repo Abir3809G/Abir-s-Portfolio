@@ -267,8 +267,7 @@
     var footerSocial = document.getElementById('footerSocial');
     if (footerSocial) socials.forEach(function(s){ footerSocial.appendChild(socialLink(s)); });
 
-    if (p.cv) { setHref('navCvLink', p.cv); }
-    else { var ncl = document.getElementById('navCvLink'); if (ncl) ncl.style.display = 'none'; }
+    initCvDownload(p);
 
     // About
     setText('aboutBio', p.aboutBio || p.summary || '');
@@ -513,6 +512,117 @@
       }
     }
     tick();
+  }
+
+  // ---- CV download button: a plain link when there's one CV, a dropdown
+  // menu of role-labeled CVs when there's more than one (e.g. "As a Web
+  // Developer", "As a Designer"). Falls back to the older single profile.cv
+  // field if the newer profile.cvs list hasn't been set up yet, so nothing
+  // breaks between deploying this and actually adding CVs in admin.html. ----
+  function initCvDownload(p){
+    var wrap = document.getElementById('cvDropdown');
+    var singleLink = document.getElementById('cvSingleLink');
+    var btn = document.getElementById('cvDropdownBtn');
+    var menu = document.getElementById('cvDropdownMenu');
+    if (!wrap) return;
+    var cvs = (p.cvs || []).filter(function(c){ return c && c.file; });
+    if (!cvs.length && p.cv) cvs = [{ label: 'Download CV', file: p.cv }];
+    if (!cvs.length){ wrap.style.display = 'none'; return; }
+    wrap.style.display = '';
+
+    // NOTE ON THE PASSWORD GATE: this is a plain static site with no server,
+    // so this can only ever be a soft speed-bump against casual visitors —
+    // the password itself lives in the public data.json, and there's no way
+    // to truly hide a file's contents from someone determined to inspect the
+    // page. It's deliberately not put in the link's real href/wired until a
+    // correct password is entered, so a casual right-click "copy link" can't
+    // trivially grab it either — but that's the ceiling of what's possible here.
+    var password = (p.cvPassword || '').trim();
+
+    function actuallyDownload(file){
+      var a = document.createElement('a');
+      a.href = file;
+      a.setAttribute('download', '');
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    var pendingFile = null;
+    function requestDownload(file){
+      if (!password){ actuallyDownload(file); return; }
+      pendingFile = file;
+      openCvPasswordModal();
+    }
+
+    function openCvPasswordModal(){
+      var modal = document.getElementById('cvPasswordModal');
+      var input = document.getElementById('cvPasswordInput');
+      var err = document.getElementById('cvPasswordError');
+      if (!modal || !input) return;
+      err.textContent = '';
+      input.value = '';
+      modal.classList.add('open');
+      setTimeout(function(){ input.focus(); }, 50);
+    }
+    function closeCvPasswordModal(){
+      var modal = document.getElementById('cvPasswordModal');
+      if (modal) modal.classList.remove('open');
+      pendingFile = null;
+    }
+    function submitCvPassword(){
+      var input = document.getElementById('cvPasswordInput');
+      var err = document.getElementById('cvPasswordError');
+      if (!input) return;
+      if (input.value === password){
+        var file = pendingFile;
+        closeCvPasswordModal();
+        if (file) actuallyDownload(file);
+      } else {
+        err.textContent = 'Incorrect password — please try again.';
+        input.value = '';
+        input.focus();
+      }
+    }
+    // Wire the modal's buttons/keys once — it's shared by every CV link.
+    if (!wrap._cvModalWired){
+      wrap._cvModalWired = true;
+      var cancelBtn = document.getElementById('cvPasswordCancel');
+      var submitBtn = document.getElementById('cvPasswordSubmit');
+      var modalEl = document.getElementById('cvPasswordModal');
+      var inputEl = document.getElementById('cvPasswordInput');
+      if (cancelBtn) cancelBtn.addEventListener('click', closeCvPasswordModal);
+      if (submitBtn) submitBtn.addEventListener('click', submitCvPassword);
+      if (modalEl) modalEl.addEventListener('click', function(e){ if (e.target === modalEl) closeCvPasswordModal(); });
+      if (inputEl) inputEl.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitCvPassword(); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeCvPasswordModal(); });
+    }
+
+    if (cvs.length === 1){
+      if (btn) btn.style.display = 'none';
+      if (menu) menu.innerHTML = '';
+      if (singleLink){
+        singleLink.style.display = '';
+        singleLink.href = '#';
+        singleLink.onclick = function(e){ e.preventDefault(); requestDownload(cvs[0].file); };
+      }
+      return;
+    }
+
+    if (singleLink) singleLink.style.display = 'none';
+    if (!btn || !menu) return;
+    btn.style.display = '';
+    menu.innerHTML = '';
+    cvs.forEach(function(c){
+      var a = document.createElement('a');
+      a.href = '#';
+      a.textContent = c.label || 'CV';
+      a.onclick = function(e){ e.preventDefault(); wrap.classList.remove('open'); requestDownload(c.file); };
+      menu.appendChild(a);
+    });
+    btn.onclick = function(e){ e.stopPropagation(); wrap.classList.toggle('open'); };
+    document.addEventListener('click', function(){ wrap.classList.remove('open'); });
+    menu.addEventListener('click', function(e){ e.stopPropagation(); });
   }
 
   // ---- Work / Projects gallery: dark folder cards + combined full-screen

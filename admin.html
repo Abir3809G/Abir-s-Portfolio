@@ -74,12 +74,6 @@
           <input type="file" id="pAboutPhotoFile" accept="image/*" class="upload-input">
           <span class="upload-status" id="pAboutPhotoFileStatus"></span>
         </div>
-        <div class="field" style="grid-column:1/-1">
-          <label>CV file (PDF) — powers the "Download CV" button</label>
-          <input id="pCv" placeholder="assets/Your_CV.pdf">
-          <input type="file" id="pCvFile" accept="application/pdf" class="upload-input">
-          <span class="upload-status" id="pCvFileStatus"></span>
-        </div>
       </div>
       <div class="field"><label>Summary (used in the hero section)</label><textarea id="pSummary" rows="3"></textarea></div>
       <div class="field"><label>About bio (used in the "Who I Am" section — a more personal paragraph)</label><textarea id="pAboutBio" rows="3"></textarea></div>
@@ -90,6 +84,18 @@
         <input id="pFormspreeId" placeholder="e.g. xnnqzzzz or https://formspree.io/f/xnnqzzzz">
       </div>
       <p class="hint" style="margin-top:-8px;">Leave this blank and the contact form stays hidden on your site (no broken form is ever shown). To turn it on: go to <b>formspree.io</b>, sign up free, create a new form, then paste either the short ID or the full form URL here (both work) and save.</p>
+    </div>
+
+    <div class="panel">
+      <h2>CV Downloads</h2>
+      <p class="hint">Offer different CV/résumé versions tailored to different roles — e.g. "As a Web Developer", "As a Designer", "As a UI/UX Designer", "As a Visa Process Expert", "As a Motion Video Editor". With 2 or more added, "Download CV" becomes a dropdown menu on the live site; with just one, it stays a plain direct-download button. Removing a CV here permanently deletes that PDF from GitHub too, unless the exact same file is still used somewhere else.</p>
+      <div class="field">
+        <label>Password to protect CV downloads (optional)</label>
+        <input id="pCvPassword" placeholder="Leave blank for no password">
+      </div>
+      <p class="hint" style="margin-top:-8px;">Heads up: this site has no server, so this can only ever be a light speed-bump, not real security — the password itself is stored in this same public data.json, and anyone determined enough (viewing the page's code/network activity) could still get past it. It's enough to stop a casual visitor from grabbing your CV without asking, but not to truly restrict access.</p>
+      <div id="cvList"></div>
+      <button class="btn btn-sm" id="btnAddCv">+ Add CV version</button>
     </div>
 
     <div class="panel">

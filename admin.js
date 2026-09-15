@@ -116,7 +116,10 @@
     var paths = [];
     function add(p){ if (p) paths.push(p); }
     var d = state.data || {};
-    if (d.profile){ add(d.profile.photo); add(d.profile.aboutPhoto); add(d.profile.cv); }
+    if (d.profile){
+      add(d.profile.photo); add(d.profile.aboutPhoto); add(d.profile.cv);
+      (d.profile.cvs || []).forEach(function(c){ add(c.file); });
+    }
     (d.projects || []).forEach(function(f){
       add(f.thumbnail);
       (f.items || []).forEach(function(it){ add(it.image); });
@@ -283,6 +286,7 @@
   // ---------- form population ----------
   function bindText(id, getVal, setVal){
     var node = document.getElementById(id);
+    if (!node) return; // a field that no longer exists in the HTML should never silently break the rest of the form
     node.value = getVal() || '';
     node.addEventListener('input', function(){ setVal(node.value); });
   }
@@ -308,13 +312,13 @@
     bindText('pPhones', function(){ return (d.profile.phones||[]).join(', '); }, function(v){ d.profile.phones = v.split(',').map(function(s){return s.trim();}).filter(Boolean); });
     bindText('pPhoto', function(){ return d.profile.photo; }, function(v){ d.profile.photo = v; });
     bindText('pAboutPhoto', function(){ return d.profile.aboutPhoto; }, function(v){ d.profile.aboutPhoto = v; });
-    bindText('pCv', function(){ return d.profile.cv; }, function(v){ d.profile.cv = v; });
     bindText('pSummary', function(){ return d.profile.summary; }, function(v){ d.profile.summary = v; });
     bindText('pAboutBio', function(){ return d.profile.aboutBio; }, function(v){ d.profile.aboutBio = v; });
     bindText('pQuote', function(){ return d.profile.quote; }, function(v){ d.profile.quote = v; });
     bindText('pLanguages', function(){ return d.profile.languages; }, function(v){ d.profile.languages = v; });
     bindText('pInterests', function(){ return d.profile.interests; }, function(v){ d.profile.interests = v; });
     bindText('pFormspreeId', function(){ return d.profile.formspreeId; }, function(v){ d.profile.formspreeId = v.trim(); });
+    bindText('pCvPassword', function(){ return d.profile.cvPassword; }, function(v){ d.profile.cvPassword = v; });
 
     wireUpload(document.getElementById('pPhotoFile'), 'assets/uploads', function(path){
       var old = d.profile.photo;
@@ -328,12 +332,14 @@
       document.getElementById('pAboutPhoto').value = path;
       if (old && old !== path) maybeDeleteOrphanedFile(old);
     }, document.getElementById('pAboutPhotoFileStatus'));
-    wireUpload(document.getElementById('pCvFile'), 'assets', function(path){
-      var old = d.profile.cv;
-      d.profile.cv = path;
-      document.getElementById('pCv').value = path;
-      if (old && old !== path) maybeDeleteOrphanedFile(old);
-    }, document.getElementById('pCvFileStatus'));
+    // Migrate the older single profile.cv field (if it still has a value and
+    // no role-based CVs have been set up yet) into the new list, so his
+    // already-uploaded CV isn't orphaned by this change.
+    d.profile.cvs = d.profile.cvs || [];
+    if (!d.profile.cvs.length && d.profile.cv){
+      d.profile.cvs.push({ label: 'General', file: d.profile.cv });
+      d.profile.cv = ''; // now tracked in cvs[] only, so it isn't double-counted as "still in use" if removed
+    }
 
     renderVentures();
     renderSocials();
@@ -343,7 +349,49 @@
     renderAchievements();
     renderFolders();
     renderStrengths();
+    renderCvs();
   }
+
+  // ---------- CV downloads (role-based list) ----------
+  function renderCvs(){
+    var wrap = document.getElementById('cvList');
+    wrap.innerHTML = '';
+    state.data.profile.cvs.forEach(function(c, i){
+      var card = rowCard(
+        '<div class="row-card-head"><b>CV ' + (i+1) + '</b><button class="btn btn-sm btn-danger js-remove">Remove</button></div>' +
+        '<div class="field"><label>Role / label (shown in the dropdown)</label><input class="js-label" value="' + attr(c.label) + '" placeholder="e.g. Web Developer"></div>' +
+        '<div class="field" style="grid-column:1/-1"><label>CV file (PDF)</label>' +
+          '<input class="js-file" value="' + attr(c.file) + '" placeholder="assets/CV-Web-Developer.pdf">' +
+          '<input type="file" accept="application/pdf" class="upload-input js-file-file"><span class="upload-status js-file-status"></span>' +
+          '<button type="button" class="btn btn-sm btn-danger js-file-clear" style="margin-top:6px;">🗑 Remove file</button></div>',
+        function(){
+          var removed = c.file;
+          state.data.profile.cvs.splice(i,1); renderCvs();
+          maybeDeleteOrphanedFile(removed);
+          flagUnsavedUpload();
+        }
+      );
+      card.querySelector('.js-label').addEventListener('input', function(e){ c.label = e.target.value; });
+      var fileInput = card.querySelector('.js-file');
+      fileInput.addEventListener('input', function(e){ c.file = e.target.value; });
+      wireUpload(card.querySelector('.js-file-file'), 'assets', function(path){
+        var old = c.file;
+        c.file = path; fileInput.value = path;
+        if (old && old !== path) maybeDeleteOrphanedFile(old);
+      }, card.querySelector('.js-file-status'));
+      card.querySelector('.js-file-clear').addEventListener('click', function(){
+        var old = c.file;
+        c.file = ''; fileInput.value = '';
+        maybeDeleteOrphanedFile(old);
+        flagUnsavedUpload();
+      });
+      wrap.appendChild(card);
+    });
+  }
+  document.getElementById('btnAddCv').addEventListener('click', function(){
+    state.data.profile.cvs.push({ label: 'New role', file: '' });
+    renderCvs();
+  });
 
   // ---------- generic row-list helper ----------
   function rowCard(innerHTML, onRemove){
