@@ -11,9 +11,9 @@
     ],
     "location": "Bandar, Narayanganj, Bangladesh",
     "summary": "Creative and detail-oriented professional with hands-on experience in graphic design, motion video editing, social media marketing, student visa file processing, and professional documentation. Skilled in managing application-related documentation workflows with accuracy, organization, and professional presentation.",
-    "photo": "assets/profile.jpg",
+    "photo": "assets/uploads/1789493450104-DP.png",
     "aboutPhoto": "",
-    "cv": "assets/Md_Aiyub_Bhuyan_Abir_CV.pdf",
+    "cv": "",
     "formspreeId": "maeyzrby",
     "email": "abir16032002@gmail.com",
     "phones": [
@@ -23,7 +23,13 @@
     "aboutBio": "I'm Abir — a passionate graphic designer, video editor, and visa processing specialist. I love turning ideas into visual stories and helping students achieve their dream of studying abroad. I focus on quality, creativity, accuracy, and professional presentation in every project I work on.",
     "quote": "Creativity builds brands, but honesty builds trust.",
     "languages": "Bangla (Native), English (Fluent)",
-    "interests": "Continuous learning and exploring new skills, technologies, creative techniques, and professional tools that improve work quality and problem-solving ability."
+    "interests": "Continuous learning and exploring new skills, technologies, creative techniques, and professional tools that improve work quality and problem-solving ability.",
+    "cvs": [
+      {
+        "label": "General",
+        "file": "assets/Md_Aiyub_Bhuyan_Abir_CV.pdf"
+      }
+    ]
   },
   "strengths": [
     "Strong creative thinking and professional design sense",
